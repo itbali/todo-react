@@ -1,0 +1,76 @@
+[33mcommit 1866ecc882a05d558a4b8983a8bb3b51c0c9912a[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m)[m
+Author: MichaelTupikov <tupikov7@gmail.com>
+Date:   Fri Dec 27 12:35:20 2024 +0300
+
+    added new readme, removed old readme
+
+[33mcommit a8fc77573a80509c833471de6532aab2116d9226[m[33m ([m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m)[m
+Author: Alex Duzhev <alexey.duzhev@tmrw.com>
+Date:   Tue Dec 24 19:15:59 2024 +0100
+
+    removed old files
+
+[33mcommit 457135b763556907783c2e8c8a36ac2d6e6260d9[m
+Author: Alex Duzhev <alexey.duzhev@tmrw.com>
+Date:   Tue Dec 24 19:15:11 2024 +0100
+
+    Revert "created react app"
+    
+    This reverts commit 6d8a8e63fb3bbc09d3bdf66486007ce2af543972.
+
+[33mcommit 6d8a8e63fb3bbc09d3bdf66486007ce2af543972[m
+Author: Alex Duzhev <alexey.duzhev@tmrw.com>
+Date:   Tue Dec 24 18:54:47 2024 +0100
+
+    created react app
+
+[33mcommit d5e722a990efdc17960a36396d67c690fcbdcaa3[m
+Merge: b2dcf56 1858a6c
+Author: Aleksei Diuzhev <89312941+itbali@users.noreply.github.com>
+Date:   Sun Dec 22 19:04:36 2024 +0100
+
+    Merge pull request #1 from itbali/feature/create-new-readme
+    
+    Feature/create new readme
+
+[33mcommit 1858a6cdb11e8c0b461c4e74d6f13c9f374c1ec5[m
+Author: Alex Duzhev <alexey.duzhev@tmrw.com>
+Date:   Sun Dec 22 19:02:13 2024 +0100
+
+    updated readme 3
+
+[33mcommit 4232b2326cf943f2b302f7c795474fb970b29400[m
+Author: Alex Duzhev <alexey.duzhev@tmrw.com>
+Date:   Sun Dec 22 18:48:07 2024 +0100
+
+    updated readme 2
+
+[33mcommit 03ebb1be79297fa2182f04d112f2cc475aca3538[m
+Author: Alex Duzhev <alexey.duzhev@tmrw.com>
+Date:   Sun Dec 22 18:46:58 2024 +0100
+
+    updated readme
+
+[33mcommit 5a6fd05b820cae455e5b4670575182f477053681[m
+Author: Alex Duzhev <alexey.duzhev@tmrw.com>
+Date:   Sun Dec 22 18:40:10 2024 +0100
+
+    added new readme file
+
+[33mcommit b2dcf56373c92fbd3edd24957a1cdfe9046f48c8[m
+Author: Alex Duzhev <alexey.duzhev@tmrw.com>
+Date:   Sun Dec 22 18:32:45 2024 +0100
+
+    renamed file
+
+[33mcommit 14b2ff59bda3e818f393b3bd74f50b0ecaab7abd[m
+Author: Alex Duzhev <alexey.duzhev@tmrw.com>
+Date:   Sun Dec 22 18:28:48 2024 +0100
+
+    added new readme, removed old readme
+
+[33mcommit fce9f94046934e8a2e4e738be1f12e6d733e52fe[m
+Author: Aleksei Diuzhev <89312941+itbali@users.noreply.github.com>
+Date:   Sun Dec 22 17:29:04 2024 +0100
+
+    Initial commit
