@@ -20,11 +20,19 @@ export default tseslint.config(
 		},
 		rules: {
 			...reactHooks.configs.recommended.rules,
-			'react-refresh/only-export-components': ['warn', { allowConstantExport: true }],
+			'react-refresh/only-export-components': [
+				'warn',
+				{ allowConstantExport: true },
+			],
 			'prefer-const': 'warn',
 			'no-var': 'error',
-			'for-direction': 'error',
 			'no-console': 'error',
+			'no-magic-numbers': [
+				'error',
+				{ ignoreArrayIndexes: true },
+				{ ignoreDefaultValues: true },
+			],
+			'no-duplicate-imports': 'warn',
 		},
 	},
 	eslintConfigPrettier,
