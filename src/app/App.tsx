@@ -5,7 +5,7 @@ import githubLogo from '../shared/assets/github.svg';
 import './App.css';
 
 function App() {
-	const [count, setcount] = useState(0);
+	const [count, setCount] = useState(0);
 
 	return (
 		<>
@@ -17,12 +17,14 @@ function App() {
 					<img src={reactLogo} className="logo react" alt="React logo" />
 				</a>
 				<a href="https://github.com" target="_blank">
+					{' '}
+					˜
 					<img src={githubLogo} className="logo github" alt="Github logo" />
 				</a>
 			</div>
 			<h1>Vite + React</h1>
 			<div className="card">
-				<button onClick={() => setcount((count) => count + 1)}>
+				<button onClick={() => setCount((count) => count + 1)}>
 					count is {count}
 				</button>
 				<p>
