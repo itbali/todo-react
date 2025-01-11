@@ -17,8 +17,6 @@ function App() {
 					<img src={reactLogo} className="logo react" alt="React logo" />
 				</a>
 				<a href="https://github.com" target="_blank">
-					{' '}
-					˜
 					<img src={githubLogo} className="logo github" alt="Github logo" />
 				</a>
 			</div>
