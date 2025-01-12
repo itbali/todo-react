@@ -27,6 +27,11 @@ export default tseslint.config(
 			'prefer-const': 'warn',
 			'no-var': 'error',
 			'no-console': 'error',
+			'no-magic-numbers': [
+				'error',
+				{ ignoreArrayIndexes: true },
+				{ ignoreDefaultValues: true },
+			],
 			'no-duplicate-imports': 'warn',
 		},
 	},
