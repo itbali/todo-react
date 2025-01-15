@@ -5,6 +5,9 @@ import {
 	Typography,
 	Button,
 	IconButton,
+	Stack,
+	Avatar,
+	Tooltip,
 } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 
@@ -22,10 +25,20 @@ const ButtonAppBar = () => {
 					>
 						<MenuIcon />
 					</IconButton>
-					<Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-						News
-					</Typography>
-					<Button color="inherit">Login</Button>
+					<Stack direction={'row'} spacing={2} style={{ flexGrow: 1 }}>
+						<Typography variant="h6" component="div">
+							Todos
+						</Typography>
+						<Typography variant="h6" component="div">
+							About
+						</Typography>
+					</Stack>
+					<Stack direction={'row'} spacing={2}>
+						<Button color="inherit">Login</Button>
+						<Tooltip title="User">
+							<Avatar src={''} />
+						</Tooltip>
+					</Stack>
 				</Toolbar>
 			</AppBar>
 		</Box>
