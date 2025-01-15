@@ -8,7 +8,6 @@ import '@fontsource/roboto/700.css';
 import reactLogo from '../shared/assets/react.svg';
 import viteLogo from '/vite.svg';
 import githubLogo from '../shared/assets/github.svg';
-import './App.css';
 import AppBar from './AppBar.tsx';
 
 function App() {
