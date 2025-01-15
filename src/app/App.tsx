@@ -1,12 +1,14 @@
 import { useState } from 'react';
-import reactLogo from '../shared/assets/react.svg';
-import viteLogo from '/vite.svg';
-import githubLogo from '../shared/assets/github.svg';
-import './App.css';
+import { Button } from '@mui/material';
 import '@fontsource/roboto/300.css';
 import '@fontsource/roboto/400.css';
 import '@fontsource/roboto/500.css';
 import '@fontsource/roboto/700.css';
+
+import reactLogo from '../shared/assets/react.svg';
+import viteLogo from '/vite.svg';
+import githubLogo from '../shared/assets/github.svg';
+import './App.css';
 
 function App() {
 	const [count, setCount] = useState(0);
@@ -26,9 +28,12 @@ function App() {
 			</div>
 			<h1>Vite + React</h1>
 			<div className="card">
-				<button onClick={() => setCount((count) => count + 1)}>
+				<Button
+					variant={'contained'}
+					onClick={() => setCount((count) => count + 1)}
+				>
 					count is {count}
-				</button>
+				</Button>
 				<p>
 					Edit <code>src/App.tsx</code> and save to test HMR
 				</p>
