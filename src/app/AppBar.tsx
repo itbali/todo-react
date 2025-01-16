@@ -8,13 +8,12 @@ import {
 	Stack,
 	Avatar,
 	Tooltip,
-	RadioGroup,
-	Radio,
 	FormControl,
 	FormControlLabel,
 	useColorScheme,
+	Switch,
 } from '@mui/material';
-import { Menu, Nightlight, WbSunny } from '@mui/icons-material';
+import { Menu, Nightlight } from '@mui/icons-material';
 
 const ButtonAppBar = () => {
 	const { mode, setMode } = useColorScheme();
@@ -45,26 +44,17 @@ const ButtonAppBar = () => {
 
 					<Stack direction={'row'} spacing={2}>
 						<FormControl>
-							<RadioGroup
-								aria-labelledby="demo-theme-toggle"
-								name="theme-toggle"
-								row
-								value={mode}
-								onChange={(event) =>
-									setMode(event.target.value as 'light' | 'dark')
+							<FormControlLabel
+								control={
+									<Switch
+										checked={mode === 'dark'}
+										onChange={(event) =>
+											setMode(event.target.checked ? 'dark' : 'light')
+										}
+									/>
 								}
-							>
-								<FormControlLabel
-									value="light"
-									control={<Radio />}
-									label={<WbSunny />}
-								/>
-								<FormControlLabel
-									value="dark"
-									control={<Radio />}
-									label={<Nightlight />}
-								/>
-							</RadioGroup>
+								label={<Nightlight />}
+							/>
 						</FormControl>
 						<Button color="inherit">Login</Button>
 						<Tooltip title="User">
