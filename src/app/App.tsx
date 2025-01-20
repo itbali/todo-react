@@ -1,13 +1,20 @@
 import {
 	Button,
 	Container,
+	FilledInput,
+	IconButton,
 	InputAdornment,
 	Stack,
 	TextField,
 	ToggleButton,
 	ToggleButtonGroup,
 } from '@mui/material';
-import { AccountCircle } from '@mui/icons-material';
+import {
+	AccountCircle,
+	Lock,
+	Visibility,
+	VisibilityOff,
+} from '@mui/icons-material';
 import { SyntheticEvent, useState } from 'react';
 import '@fontsource/roboto/300.css';
 import '@fontsource/roboto/400.css';
@@ -21,6 +28,7 @@ function App() {
 	const [password, setPassword] = useState('');
 	const [loading, setLoading] = useState(false);
 	const [loginFormName, setLoginFormName] = useState('login');
+	const [showPassword, setShowPassword] = useState(false);
 
 	const handleEmailChange = (
 		e: SyntheticEvent<HTMLTextAreaElement | HTMLInputElement>,
@@ -48,6 +56,7 @@ function App() {
 	) => {
 		setLoginFormName(newAlignment);
 	};
+	const handleClickShowPassword = () => setShowPassword(!showPassword);
 
 	return (
 		<>
@@ -77,6 +86,7 @@ function App() {
 							label={'Email'}
 							disabled={loading}
 							variant={'filled'}
+							required
 							slotProps={{
 								input: {
 									startAdornment: (
@@ -88,18 +98,35 @@ function App() {
 							}}
 						/>
 						<TextField
-							type={'password'}
+							type={showPassword ? 'text' : 'password'}
 							value={password}
 							onChange={handlePasswordChange}
 							size={'small'}
 							label={'Password'}
 							disabled={loading}
 							variant={'filled'}
+							required
+							slots={{
+								input: FilledInput,
+							}}
 							slotProps={{
 								input: {
 									startAdornment: (
 										<InputAdornment position={'start'}>
-											<AccountCircle />
+											<Lock />
+										</InputAdornment>
+									),
+									endAdornment: (
+										<InputAdornment position={'end'}>
+											<IconButton
+												aria-label={
+													showPassword ? 'hide password' : 'show password'
+												}
+												onClick={handleClickShowPassword}
+												edge={'end'}
+											>
+												{showPassword ? <VisibilityOff /> : <Visibility />}
+											</IconButton>
 										</InputAdornment>
 									),
 								},
@@ -124,6 +151,7 @@ function App() {
 							label={'Email'}
 							disabled={loading}
 							variant={'filled'}
+							required
 							slotProps={{
 								input: {
 									startAdornment: (
@@ -135,18 +163,35 @@ function App() {
 							}}
 						/>
 						<TextField
-							type={'password'}
+							type={showPassword ? 'text' : 'password'}
 							value={password}
 							onChange={handlePasswordChange}
 							size={'small'}
 							label={'Password'}
 							disabled={loading}
 							variant={'filled'}
+							required
+							slots={{
+								input: FilledInput,
+							}}
 							slotProps={{
 								input: {
 									startAdornment: (
 										<InputAdornment position={'start'}>
-											<AccountCircle />
+											<Lock />
+										</InputAdornment>
+									),
+									endAdornment: (
+										<InputAdornment position={'end'}>
+											<IconButton
+												aria-label={
+													showPassword ? 'hide password' : 'show password'
+												}
+												onClick={handleClickShowPassword}
+												edge={'end'}
+											>
+												{showPassword ? <VisibilityOff /> : <Visibility />}
+											</IconButton>
 										</InputAdornment>
 									),
 								},
