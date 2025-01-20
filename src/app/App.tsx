@@ -59,6 +59,10 @@ function App() {
 
 	const handleClickShowPassword = () => setShowPassword(!showPassword);
 
+	const handleClearFields = () => {
+		setEmail('');
+		setPassword('');
+	};
 	return (
 		<>
 			<AppBar />
@@ -198,6 +202,14 @@ function App() {
 								},
 							}}
 						/>
+						<Button
+							onClick={handleClearFields}
+							variant={'outlined'}
+							size={'small'}
+							disabled={loading}
+						>
+							Clear fields
+						</Button>
 						<Button
 							onClick={handleLogin}
 							variant={'contained'}
