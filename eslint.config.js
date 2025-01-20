@@ -26,7 +26,7 @@ export default tseslint.config(
 			],
 			'prefer-const': 'warn',
 			'no-var': 'error',
-			'no-console': 'error',
+			'no-console': 'warn',
 			'no-duplicate-imports': 'warn',
 		},
 	},

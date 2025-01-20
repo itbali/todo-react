@@ -47,6 +47,8 @@ function App() {
 		setLoading(true);
 		setTimeout(() => {
 			setLoading(false);
+			setEmail('');
+			setPassword('');
 		}, 2000);
 	};
 
@@ -78,8 +80,12 @@ function App() {
 					sx={{ marginBottom: 2 }}
 					fullWidth
 				>
-					<ToggleButton value={'login'}>Login</ToggleButton>
-					<ToggleButton value={'register'}>Register</ToggleButton>
+					<ToggleButton value={'login'} sx={{ borderRadius: '7px' }}>
+						Login
+					</ToggleButton>
+					<ToggleButton value={'register'} sx={{ borderRadius: '7px' }}>
+						Register
+					</ToggleButton>
 				</ToggleButtonGroup>
 				{loginFormName === 'login' ? (
 					<Stack spacing={2}>
