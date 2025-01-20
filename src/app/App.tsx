@@ -30,6 +30,11 @@ function App() {
 	const [loginFormName, setLoginFormName] = useState('login');
 	const [showPassword, setShowPassword] = useState(false);
 
+	const handleClearFields = () => {
+		setEmail('');
+		setPassword('');
+	};
+
 	const handleEmailChange = (
 		e: SyntheticEvent<HTMLTextAreaElement | HTMLInputElement>,
 	) => {
@@ -47,8 +52,7 @@ function App() {
 		setLoading(true);
 		setTimeout(() => {
 			setLoading(false);
-			setEmail('');
-			setPassword('');
+			handleClearFields();
 		}, 2000);
 	};
 
@@ -61,10 +65,6 @@ function App() {
 
 	const handleClickShowPassword = () => setShowPassword(!showPassword);
 
-	const handleClearFields = () => {
-		setEmail('');
-		setPassword('');
-	};
 	return (
 		<>
 			<AppBar />
