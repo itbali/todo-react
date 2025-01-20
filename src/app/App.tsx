@@ -18,6 +18,7 @@ import AppBar from './AppBar.tsx';
 function App() {
 	const [email, setEmail] = useState('');
 	const [password, setPassword] = useState('');
+	const [loading, setLoading] = useState(false);
 
 	const handleEmailChange = (
 		e: SyntheticEvent<HTMLTextAreaElement | HTMLInputElement>,
@@ -31,6 +32,10 @@ function App() {
 	};
 	const handleLogin = () => {
 		console.log({ email, password });
+		setLoading(true);
+		setTimeout(() => {
+			setLoading(false);
+		}, 2000);
 	};
 	return (
 		<>
@@ -47,6 +52,7 @@ function App() {
 						onChange={handleEmailChange}
 						size={'small'}
 						label={'Email'}
+						disabled={loading}
 						variant={'filled'}
 						slotProps={{
 							input: {
@@ -64,6 +70,7 @@ function App() {
 						onChange={handlePasswordChange}
 						size={'small'}
 						label={'Password'}
+						disabled={loading}
 						variant={'filled'}
 						slotProps={{
 							input: {
@@ -75,8 +82,13 @@ function App() {
 							},
 						}}
 					/>
-					<Button onClick={handleLogin} variant={'contained'}>
-						Login
+					<Button
+						onClick={handleLogin}
+						variant={'contained'}
+						loading={loading}
+						loadingPosition={'start'}
+					>
+						{loading ? 'Loading...' : 'Login'}
 					</Button>
 				</Stack>
 			</Container>
