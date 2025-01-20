@@ -56,6 +56,7 @@ function App() {
 	) => {
 		setLoginFormName(newAlignment);
 	};
+
 	const handleClickShowPassword = () => setShowPassword(!showPassword);
 
 	return (
