@@ -1,48 +1,64 @@
-import { useState } from 'react';
-import { Button } from '@mui/material';
+import {
+	Button,
+	Container,
+	InputAdornment,
+	Stack,
+	TextField,
+	Typography,
+} from '@mui/material';
+import { AccountCircle } from '@mui/icons-material';
 import '@fontsource/roboto/300.css';
 import '@fontsource/roboto/400.css';
 import '@fontsource/roboto/500.css';
 import '@fontsource/roboto/700.css';
 
-import reactLogo from '../shared/assets/react.svg';
-import viteLogo from '/vite.svg';
-import githubLogo from '../shared/assets/github.svg';
 import AppBar from './AppBar.tsx';
 
 function App() {
-	const [count, setCount] = useState(0);
-
 	return (
 		<>
 			<AppBar />
-			<div style={{ marginTop: '100px' }}>
-				<a href="https://vite.dev" target="_blank">
-					<img src={viteLogo} className="logo" alt="Vite logo" />
-				</a>
-				<a href="https://react.dev" target="_blank">
-					<img src={reactLogo} className="logo react" alt="React logo" />
-				</a>
-				<a href="https://github.com" target="_blank">
-					<img src={githubLogo} className="logo github" alt="Github logo" />
-				</a>
-			</div>
-			<h1>Vite + React</h1>
-			<div className="card">
-				<Button
-					variant={'contained'}
-					onClick={() => setCount((count) => count + 1)}
-				>
-					count is {count}
-				</Button>
-				<p>
-					Edit <code>src/App.tsx</code> and save to test HMR
-				</p>
-			</div>
-			<p className="read-the-docs">
-				Click on the Vite and React logos to learn more
-			</p>
+			<div style={{ marginTop: '100px' }} />
+			<Container maxWidth={'sm'}>
+				<Typography variant={'h4'} gutterBottom>
+					Login
+				</Typography>
+				<Stack spacing={2}>
+					<TextField
+						type={'email'}
+						size={'small'}
+						label={'Email'}
+						variant={'filled'}
+						slotProps={{
+							input: {
+								startAdornment: (
+									<InputAdornment position={'start'}>
+										<AccountCircle />
+									</InputAdornment>
+								),
+							},
+						}}
+					/>
+					<TextField
+						type={'password'}
+						size={'small'}
+						label={'Password'}
+						variant={'filled'}
+						slotProps={{
+							input: {
+								startAdornment: (
+									<InputAdornment position={'start'}>
+										<AccountCircle />
+									</InputAdornment>
+								),
+							},
+						}}
+					/>
+					<Button variant={'contained'}>Login</Button>
+				</Stack>
+			</Container>
 		</>
 	);
 }
+
 export default App;
