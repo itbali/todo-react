@@ -1,17 +1,14 @@
 import {
 	AppBar,
+	Avatar,
 	Box,
-	Toolbar,
-	Typography,
 	Button,
 	IconButton,
 	Stack,
-	Avatar,
+	ToggleButton,
+	Toolbar,
 	Tooltip,
-	RadioGroup,
-	Radio,
-	FormControl,
-	FormControlLabel,
+	Typography,
 	useColorScheme,
 } from '@mui/material';
 import { Menu, Nightlight, WbSunny } from '@mui/icons-material';
@@ -21,6 +18,9 @@ const ButtonAppBar = () => {
 	if (!mode) {
 		return null;
 	}
+	const handleToggle = () => {
+		setMode(mode === 'light' ? 'dark' : 'light');
+	};
 	return (
 		<Box sx={{ flexGrow: 1 }}>
 			<AppBar position="fixed">
@@ -44,28 +44,16 @@ const ButtonAppBar = () => {
 					</Stack>
 
 					<Stack direction={'row'} spacing={2}>
-						<FormControl>
-							<RadioGroup
-								aria-labelledby="demo-theme-toggle"
-								name="theme-toggle"
-								row
-								value={mode}
-								onChange={(event) =>
-									setMode(event.target.value as 'light' | 'dark')
-								}
-							>
-								<FormControlLabel
-									value="light"
-									control={<Radio />}
-									label={<WbSunny sx={{ display: 'block' }} />}
-								/>
-								<FormControlLabel
-									value="dark"
-									control={<Radio />}
-									label={<Nightlight sx={{ display: 'block' }} />}
-								/>
-							</RadioGroup>
-						</FormControl>
+						<ToggleButton
+							value={mode}
+							onChange={handleToggle}
+							sx={{
+								borderRadius: '12px',
+								boxShadow: 3,
+							}}
+						>
+							{mode === 'dark' ? <WbSunny /> : <Nightlight />}
+						</ToggleButton>
 						<Button color="inherit">Login</Button>
 						<Tooltip title="User">
 							<Avatar src={''} />
