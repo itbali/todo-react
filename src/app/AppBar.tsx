@@ -18,6 +18,9 @@ const ButtonAppBar = () => {
 	if (!mode) {
 		return null;
 	}
+	const handleToggle = () => {
+		setMode(mode === 'light' ? 'dark' : 'light');
+	};
 	return (
 		<Box sx={{ flexGrow: 1 }}>
 			<AppBar position="fixed">
@@ -43,7 +46,7 @@ const ButtonAppBar = () => {
 					<Stack direction={'row'} spacing={2}>
 						<ToggleButton
 							value={mode}
-							onChange={() => setMode(mode === 'light' ? 'dark' : 'light')}
+							onChange={handleToggle}
 							sx={{
 								borderRadius: '12px',
 								boxShadow: 3,
