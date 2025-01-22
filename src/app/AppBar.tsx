@@ -1,10 +1,12 @@
 import {
 	AppBar,
 	Avatar,
+	Badge,
 	Box,
 	Button,
 	IconButton,
 	Stack,
+	styled,
 	ToggleButton,
 	Toolbar,
 	Tooltip,
@@ -13,14 +15,50 @@ import {
 } from '@mui/material';
 import { Menu, Nightlight, WbSunny } from '@mui/icons-material';
 
-const ButtonAppBar = () => {
+type Props = {
+	username?: string;
+};
+
+const ButtonAppBar = (props: Props) => {
+	const { username } = props;
 	const { mode, setMode } = useColorScheme();
+
 	if (!mode) {
 		return null;
 	}
+
 	const handleToggle = () => {
 		setMode(mode === 'light' ? 'dark' : 'light');
 	};
+
+	const StyledBadge = styled(Badge)(({ theme }) => ({
+		'& .MuiBadge-badge': {
+			backgroundColor: '#44b700 !important',
+			color: '#44b700 !important',
+			boxShadow: `0 0 0 2px ${theme.palette.background.paper}`,
+			'&::after': {
+				position: 'absolute',
+				top: 0,
+				left: 0,
+				width: '100%',
+				height: '100%',
+				borderRadius: '50%',
+				animation: 'ripple 1.2s infinite ease-in-out',
+				border: '1px solid currentColor',
+				content: '""',
+			},
+		},
+		'@keyframes ripple': {
+			'0%': {
+				transform: 'scale(.8)',
+				opacity: 1,
+			},
+			'100%': {
+				transform: 'scale(2.4)',
+				opacity: 0,
+			},
+		},
+	}));
 	return (
 		<Box sx={{ flexGrow: 1 }}>
 			<AppBar position="fixed">
@@ -35,9 +73,11 @@ const ButtonAppBar = () => {
 						<Menu />
 					</IconButton>
 					<Stack direction={'row'} spacing={2} style={{ flexGrow: 1 }}>
-						<Typography variant="h6" component="div">
-							Todos
-						</Typography>
+						{username && (
+							<Typography variant="h6" component="div">
+								Todos
+							</Typography>
+						)}
 						<Typography variant="h6" component="div">
 							About
 						</Typography>
@@ -54,10 +94,25 @@ const ButtonAppBar = () => {
 						>
 							{mode === 'dark' ? <WbSunny /> : <Nightlight />}
 						</ToggleButton>
-						<Button color="inherit">Login</Button>
-						<Tooltip title="User">
-							<Avatar src={''} />
-						</Tooltip>
+						{username ? (
+							<StyledBadge
+								overlap="circular"
+								anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+								variant="dot"
+							>
+								<Tooltip title={username}>
+									<Avatar
+										src={''}
+										alt={username}
+										sx={{ marginTop: '5px', textTransform: 'capitalize' }}
+									>
+										{username[0]}
+									</Avatar>
+								</Tooltip>
+							</StyledBadge>
+						) : (
+							<Button color="inherit">Login</Button>
+						)}
 					</Stack>
 				</Toolbar>
 			</AppBar>
