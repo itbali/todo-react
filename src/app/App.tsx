@@ -47,13 +47,28 @@ function App() {
 		setPassword(e.currentTarget.value);
 	};
 
-	const handleLogin = () => {
-		console.log({ email, password });
+	const handleLogin = async () => {
 		setLoading(true);
-		setTimeout(() => {
-			setLoading(false);
-			handleClearFields();
-		}, 2000);
+		await fetch('https://todos-be.vercel.app/auth/login', {
+			method: 'POST',
+			mode: 'cors',
+			body: JSON.stringify({ username: email, password }),
+			headers: { 'Content-Type': 'application/json' },
+		});
+		setLoading(false);
+		handleClearFields();
+	};
+
+	const handleRegister = async () => {
+		setLoading(true);
+		await fetch('https://todos-be.vercel.app/auth/register', {
+			method: 'POST',
+			mode: 'cors',
+			body: JSON.stringify({ username: email, password }),
+			headers: { 'Content-Type': 'application/json' },
+		});
+		setLoading(false);
+		handleClearFields();
 	};
 
 	const handleChange = (
@@ -217,7 +232,7 @@ function App() {
 							Clear fields
 						</Button>
 						<Button
-							onClick={handleLogin}
+							onClick={handleRegister}
 							variant={'contained'}
 							loading={loading}
 							loadingPosition={'start'}
