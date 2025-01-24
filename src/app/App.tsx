@@ -20,10 +20,15 @@ import '@fontsource/roboto/300.css';
 import '@fontsource/roboto/400.css';
 import '@fontsource/roboto/500.css';
 import '@fontsource/roboto/700.css';
+import { jwtDecode } from 'jwt-decode';
 
 import AppBar from './AppBar.tsx';
 
 function App() {
+	const [user, setUser] = useState<{
+		access_token: string;
+		username: string;
+	} | null>(null);
 	const [email, setEmail] = useState('');
 	const [password, setPassword] = useState('');
 	const [loading, setLoading] = useState(false);
@@ -47,13 +52,62 @@ function App() {
 		setPassword(e.currentTarget.value);
 	};
 
-	const handleLogin = () => {
-		console.log({ email, password });
+	const handleLogin = async () => {
 		setLoading(true);
-		setTimeout(() => {
-			setLoading(false);
+		try {
+			const loginResponse = await fetch(
+				'https://todos-be.vercel.app/auth/login',
+				{
+					method: 'POST',
+					mode: 'cors',
+					body: JSON.stringify({ username: email, password }),
+					headers: { 'Content-Type': 'application/json' },
+				},
+			);
+
+			if (!loginResponse.ok) {
+				throw new Error('Invalid credentials');
+			}
+
+			const loginData = (await loginResponse.json()) as {
+				access_token: string;
+				username: string;
+			};
+
+			const accessToken = loginData.access_token;
+			localStorage.setItem('access_token', accessToken);
+			console.warn(jwtDecode(accessToken));
+			setUser(loginData);
 			handleClearFields();
-		}, 2000);
+		} catch (error) {
+			alert(error);
+		} finally {
+			setLoading(false);
+		}
+	};
+
+	const handleRegister = async () => {
+		setLoading(true);
+		try {
+			const registerResponse = await fetch(
+				'https://todos-be.vercel.app/auth/register',
+				{
+					method: 'POST',
+					mode: 'cors',
+					body: JSON.stringify({ username: email, password }),
+					headers: { 'Content-Type': 'application/json' },
+				},
+			);
+
+			if (!registerResponse.ok) {
+				throw new Error('Username already exists');
+			}
+			handleClearFields();
+		} catch (error) {
+			alert(error);
+		} finally {
+			setLoading(false);
+		}
 	};
 
 	const handleChange = (
@@ -67,7 +121,7 @@ function App() {
 
 	return (
 		<>
-			<AppBar />
+			<AppBar username={user?.username} />
 			<div style={{ marginTop: '100px' }} />
 			<Container maxWidth={'sm'}>
 				<ToggleButtonGroup
@@ -217,7 +271,7 @@ function App() {
 							Clear fields
 						</Button>
 						<Button
-							onClick={handleLogin}
+							onClick={handleRegister}
 							variant={'contained'}
 							loading={loading}
 							loadingPosition={'start'}
