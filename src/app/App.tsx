@@ -54,6 +54,39 @@ function App() {
 
 	const handleLogin = async () => {
 		setLoading(true);
+		const loginResponse = await fetch(
+			'https://todos-be.vercel.app/auth/login',
+			{
+				method: 'POST',
+				body: JSON.stringify({ username: email, password }),
+				mode: 'cors',
+				headers: {
+					'Content-Type': 'application/json',
+				},
+			},
+		);
+		const loginData = (await loginResponse.json()) as {
+			access_token: string;
+			username: string;
+		};
+		const accessToken = loginData.access_token;
+		console.log(jwtDecode(accessToken));
+
+		localStorage.setItem('accessToken', accessToken);
+		setLoading(false);
+		setUser(loginData);
+	};
+	const handleRegister = async () => {
+		setLoading(true);
+		await fetch('https://todos-be.vercel.app/auth/register', {
+			method: 'POST',
+			body: JSON.stringify({ username: email, password }),
+			mode: 'cors',
+			headers: {
+				'Content-Type': 'application/json',
+			},
+		});
+		setLoading(false);
 		try {
 			const loginResponse = await fetch(
 				'https://todos-be.vercel.app/auth/login',
@@ -78,30 +111,6 @@ function App() {
 			localStorage.setItem('access_token', accessToken);
 			console.warn(jwtDecode(accessToken));
 			setUser(loginData);
-			handleClearFields();
-		} catch (error) {
-			alert(error);
-		} finally {
-			setLoading(false);
-		}
-	};
-
-	const handleRegister = async () => {
-		setLoading(true);
-		try {
-			const registerResponse = await fetch(
-				'https://todos-be.vercel.app/auth/register',
-				{
-					method: 'POST',
-					mode: 'cors',
-					body: JSON.stringify({ username: email, password }),
-					headers: { 'Content-Type': 'application/json' },
-				},
-			);
-
-			if (!registerResponse.ok) {
-				throw new Error('Username already exists');
-			}
 			handleClearFields();
 		} catch (error) {
 			alert(error);
@@ -197,6 +206,14 @@ function App() {
 								},
 							}}
 						/>
+						<Button
+							onClick={handleClearFields}
+							variant={'outlined'}
+							size={'small'}
+							disabled={loading}
+						>
+							Clear Fields
+						</Button>
 						<Button
 							onClick={handleLogin}
 							variant={'contained'}
