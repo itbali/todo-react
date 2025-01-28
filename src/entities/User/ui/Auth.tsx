@@ -23,6 +23,9 @@ import {
 } from '@mui/icons-material';
 import { jwtDecode } from 'jwt-decode';
 import { UserType } from '../model/userType.ts';
+import { rootApi } from '../../../shared/api/rootApi.ts';
+import { useSnackbar } from 'notistack';
+import { AxiosError } from 'axios';
 
 type AuthProps = {
 	setUser: Dispatch<SetStateAction<UserType | null>>;
@@ -34,6 +37,7 @@ const Auth = ({ setUser }: AuthProps) => {
 	const [loading, setLoading] = useState(false);
 	const [loginFormName, setLoginFormName] = useState('login');
 	const [showPassword, setShowPassword] = useState(false);
+	const { enqueueSnackbar } = useSnackbar();
 
 	const handleClearFields = () => {
 		setEmail('');
@@ -55,32 +59,22 @@ const Auth = ({ setUser }: AuthProps) => {
 	const handleLogin = async () => {
 		setLoading(true);
 		try {
-			const loginResponse = await fetch(
-				'https://todos-be.vercel.app/auth/login',
-				{
-					method: 'POST',
-					mode: 'cors',
-					body: JSON.stringify({ username: email, password }),
-					headers: { 'Content-Type': 'application/json' },
-				},
-			);
+			const loginData = await rootApi.post<UserType>('/auth/login', {
+				username: email,
+				password: password,
+			});
 
-			if (!loginResponse.ok) {
-				throw new Error('Invalid credentials');
-			}
-
-			const loginData = (await loginResponse.json()) as {
-				access_token: string;
-				username: string;
-			};
-
-			const accessToken = loginData.access_token;
+			const accessToken = loginData.data.access_token;
 			localStorage.setItem('access_token', accessToken);
 			console.warn(jwtDecode(accessToken));
-			setUser(loginData);
+			setUser(loginData.data);
+			enqueueSnackbar('Welcome to Your Account', { variant: 'success' });
 			handleClearFields();
 		} catch (error) {
-			alert(error);
+			const axiosError = error as AxiosError<{ message: string }>;
+			enqueueSnackbar(axiosError.response?.data.message || 'Unknown Error', {
+				variant: 'error',
+			});
 		} finally {
 			setLoading(false);
 		}
@@ -89,22 +83,17 @@ const Auth = ({ setUser }: AuthProps) => {
 	const handleRegister = async () => {
 		setLoading(true);
 		try {
-			const registerResponse = await fetch(
-				'https://todos-be.vercel.app/auth/register',
-				{
-					method: 'POST',
-					mode: 'cors',
-					body: JSON.stringify({ username: email, password }),
-					headers: { 'Content-Type': 'application/json' },
-				},
-			);
-
-			if (!registerResponse.ok) {
-				throw new Error('Username already exists');
-			}
+			await rootApi.post<UserType>('/auth/register', {
+				username: email,
+				password: password,
+			});
+			enqueueSnackbar('Successfully registered!', { variant: 'success' });
 			handleClearFields();
 		} catch (error) {
-			alert(error);
+			const axiosError = error as AxiosError<{ message: string }>;
+			enqueueSnackbar(axiosError.response?.data.message || 'Unknown Error', {
+				variant: 'error',
+			});
 		} finally {
 			setLoading(false);
 		}
