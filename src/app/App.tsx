@@ -8,10 +8,11 @@ import AppBar from './AppBar.tsx';
 import Auth from '../entities/User/ui/Auth.tsx';
 import { UserType } from '../entities/User/model/userType.ts';
 import Todos from '../entities/Todo/ui/Todos.tsx';
+import { autoLogin } from '../shared/utils/AutoLogin.ts';
 
 function App() {
-	const [user, setUser] = useState<UserType | null>(null);
-
+	const userFromLS = autoLogin();
+	const [user, setUser] = useState<UserType | null>(userFromLS);
 	return (
 		<>
 			<AppBar username={user?.username} />

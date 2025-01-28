@@ -16,7 +16,7 @@ type TodoProps = {
 };
 
 const Todo = ({ todo, setTodo }: TodoProps) => {
-	const handleCheckClick = () => {
+	const handleCheckboxClick = () => {
 		setTodo({ ...todo, completed: !todo.completed });
 	};
 	return (
@@ -28,7 +28,7 @@ const Todo = ({ todo, setTodo }: TodoProps) => {
 				<Typography variant="body2">{todo.description}</Typography>
 			</CardContent>
 			<CardActions>
-				<Checkbox checked={todo.completed} onClick={handleCheckClick} />
+				<Checkbox checked={todo.completed} onClick={handleCheckboxClick} />
 			</CardActions>
 		</Card>
 	);
