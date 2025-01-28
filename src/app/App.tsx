@@ -7,6 +7,7 @@ import '@fontsource/roboto/700.css';
 import AppBar from './AppBar.tsx';
 import Auth from '../entities/User/ui/Auth.tsx';
 import { UserType } from '../entities/User/model/userType.ts';
+import Todos from '../entities/Todo/ui/Todos.tsx';
 
 function App() {
 	const [user, setUser] = useState<UserType | null>(null);
@@ -15,7 +16,7 @@ function App() {
 		<>
 			<AppBar username={user?.username} />
 			<div style={{ marginTop: '100px' }} />
-			<Auth setUser={setUser} />
+			{user ? <Todos /> : <Auth setUser={setUser} />}
 		</>
 	);
 }
