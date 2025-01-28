@@ -19,8 +19,7 @@ type Props = {
 	username?: string;
 };
 
-const ButtonAppBar = (props: Props) => {
-	const { username } = props;
+const ButtonAppBar = ({ username }: Props) => {
 	const { mode, setMode } = useColorScheme();
 
 	if (!mode) {
