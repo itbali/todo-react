@@ -5,6 +5,7 @@ import {
 	Box,
 	Button,
 	IconButton,
+	MenuItem,
 	Stack,
 	styled,
 	ToggleButton,
@@ -28,6 +29,8 @@ const ButtonAppBar = ({ username }: Props) => {
 	if (!mode) {
 		return null;
 	}
+
+	const handleUserLogOut = () => {};
 
 	const handleToggle = () => {
 		setMode(mode === 'light' ? 'dark' : 'light');
@@ -61,6 +64,7 @@ const ButtonAppBar = ({ username }: Props) => {
 			},
 		},
 	}));
+
 	return (
 		<Box sx={{ flexGrow: 1 }}>
 			<AppBar position="fixed">
@@ -97,21 +101,24 @@ const ButtonAppBar = ({ username }: Props) => {
 							{mode === 'dark' ? <WbSunny /> : <Nightlight />}
 						</ToggleButton>
 						{username ? (
-							<StyledBadge
-								overlap="circular"
-								anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
-								variant="dot"
-							>
-								<Tooltip title={username}>
-									<Avatar
-										src={''}
-										alt={username}
-										sx={{ marginTop: '5px', textTransform: 'capitalize' }}
-									>
-										{username[0]}
-									</Avatar>
-								</Tooltip>
-							</StyledBadge>
+							<>
+								<StyledBadge
+									overlap="circular"
+									anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+									variant="dot"
+								>
+									<Tooltip title={username}>
+										<Avatar
+											src={''}
+											alt={username}
+											sx={{ marginTop: '5px', textTransform: 'capitalize' }}
+										>
+											{username[0]}
+										</Avatar>
+									</Tooltip>
+								</StyledBadge>
+								<MenuItem onClick={handleUserLogOut}>Log out</MenuItem>
+							</>
 						) : (
 							<Button color="inherit">Login</Button>
 						)}
