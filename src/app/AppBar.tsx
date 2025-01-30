@@ -30,7 +30,9 @@ const ButtonAppBar = ({ username }: Props) => {
 		return null;
 	}
 
-	const handleUserLogOut = () => {};
+	const handleUserLogOut = () => {
+		localStorage.removeItem('access_token');
+	};
 
 	const handleToggle = () => {
 		setMode(mode === 'light' ? 'dark' : 'light');
