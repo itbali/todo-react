@@ -1,41 +1,15 @@
-import {
-	Card,
-	CardActions,
-	CardContent,
-	Checkbox,
-	Stack,
-	Typography,
-} from '@mui/material';
+import { Button, Container, Input, Stack } from '@mui/material';
+import { useTodosStore } from '../model/store/useTodosStore.ts';
+import { Todo } from './Todo.tsx';
+import { ChangeEvent, useState } from 'react';
 import { TodoType } from '../model/todoType.ts';
-import { mockTodos } from '../model/mockTodos.ts';
-import { useState } from 'react';
-
-type TodoProps = {
-	todo: TodoType;
-	setTodo: (todo: TodoType) => void;
-};
-
-const Todo = ({ todo, setTodo }: TodoProps) => {
-	const handleCheckboxClick = () => {
-		setTodo({ ...todo, completed: !todo.completed });
-	};
-	return (
-		<Card variant="outlined" sx={{ MaxWidth: 200 }}>
-			<CardContent>
-				<Typography gutterBottom sx={{ color: 'text.secondary', fontSize: 14 }}>
-					{todo.title}
-				</Typography>
-				<Typography variant="body2">{todo.description}</Typography>
-			</CardContent>
-			<CardActions>
-				<Checkbox checked={todo.completed} onClick={handleCheckboxClick} />
-			</CardActions>
-		</Card>
-	);
-};
 
 const Todos = () => {
-	const [todos, setTodos] = useState<TodoType[]>(mockTodos);
+	const todos = useTodosStore((state) => state.todos);
+	const addTodo = useTodosStore((state) => state.addTodo);
+	const setTodos = useTodosStore((state) => state.setTodos);
+	const [newTodoTitle, setNewTodoTitle] = useState<string>('');
+	const [newTodoDescription, setNewTodoDescription] = useState<string>('');
 
 	const setTodo = (todo: TodoType) => {
 		const updatedTodos = todos.map((t) => {
@@ -46,12 +20,58 @@ const Todos = () => {
 		});
 		setTodos(updatedTodos);
 	};
+
+	const handleTitleChange = (e: ChangeEvent<HTMLInputElement>) => {
+		setNewTodoTitle(e.target.value);
+	};
+
+	const handleDescriptionChange = (e: ChangeEvent<HTMLInputElement>) => {
+		setNewTodoDescription(e.target.value);
+	};
+
+	const handleClearFields = () => {
+		setNewTodoTitle('');
+		setNewTodoDescription('');
+	};
+
+	const handleAddTodo = () => {
+		const newTodo: TodoType = {
+			_id: Date.now().toString(),
+			title: newTodoTitle,
+			description: newTodoDescription,
+			completed: false,
+			createdAt: new Date().toISOString(),
+			updatedAt: new Date().toISOString(),
+			order: todos.length + 1,
+		};
+		addTodo(newTodo);
+		handleClearFields();
+	};
 	return (
-		<Stack spacing={2} direction="row" flexWrap="wrap">
-			{todos.map((todo) => {
-				return <Todo todo={todo} key={todo._id} setTodo={setTodo} />;
-			})}
-		</Stack>
+		<Container>
+			<Input
+				placeholder={'enter title'}
+				onChange={handleTitleChange}
+				value={newTodoTitle}
+			/>
+			<Input
+				placeholder={'enter description'}
+				onChange={handleDescriptionChange}
+				value={newTodoDescription}
+			/>
+			<Button
+				variant={'outlined'}
+				disabled={!newTodoTitle}
+				onClick={handleAddTodo}
+			>
+				Add Todo
+			</Button>
+			<Stack spacing={2} direction="row" flexWrap="wrap">
+				{todos.map((todo) => {
+					return <Todo todo={todo} key={todo._id} setTodo={setTodo} />;
+				})}
+			</Stack>
+		</Container>
 	);
 };
 

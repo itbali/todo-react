@@ -14,6 +14,7 @@ import {
 	useColorScheme,
 } from '@mui/material';
 import { Menu, Nightlight, WbSunny } from '@mui/icons-material';
+import { useTodosStore } from '../entities/Todo/model/store/useTodosStore.ts';
 
 type Props = {
 	username?: string;
@@ -21,6 +22,8 @@ type Props = {
 
 const ButtonAppBar = ({ username }: Props) => {
 	const { mode, setMode } = useColorScheme();
+	const todos = useTodosStore((store) => store.todos);
+	const undoneTodos = todos.filter((todo) => !todo.completed);
 
 	if (!mode) {
 		return null;
@@ -74,7 +77,7 @@ const ButtonAppBar = ({ username }: Props) => {
 					<Stack direction={'row'} spacing={2} style={{ flexGrow: 1 }}>
 						{username && (
 							<Typography variant="h6" component="div">
-								Todos
+								Todos{' ' + undoneTodos.length}
 							</Typography>
 						)}
 						<Typography variant="h6" component="div">
