@@ -7,6 +7,7 @@ type TodosState = {
 	todos: TodoType[];
 	addTodo: (newTodo: TodoType) => void;
 	setTodos: (todos: TodoType[]) => void;
+	deleteTodo: (todoId: string) => void;
 };
 
 export const useTodosStore = create<TodosState>()(
@@ -20,6 +21,14 @@ export const useTodosStore = create<TodosState>()(
 					'add-Todo',
 				),
 			setTodos: (todos: TodoType[]) => set({ todos }),
+			deleteTodo: (todoId: string) =>
+				set(
+					(state) => ({
+						todos: state.todos.filter((todo) => todo._id !== todoId),
+					}),
+					undefined,
+					'delete-Todo',
+				),
 		};
 	}),
 );
