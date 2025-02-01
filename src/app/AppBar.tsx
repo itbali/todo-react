@@ -16,12 +16,15 @@ import {
 } from '@mui/material';
 import { Menu, Nightlight, WbSunny } from '@mui/icons-material';
 import { useTodosStore } from '../entities/Todo/model/store/useTodosStore.ts';
+import { UserType } from '../entities/User/model/userType.ts';
+import { Dispatch, SetStateAction } from 'react';
 
 type Props = {
 	username?: string;
+	setUser: Dispatch<SetStateAction<UserType | null>>;
 };
 
-const ButtonAppBar = ({ username }: Props) => {
+const ButtonAppBar = ({ username, setUser }: Props) => {
 	const { mode, setMode } = useColorScheme();
 	const todos = useTodosStore((store) => store.todos);
 	const undoneTodos = todos.filter((todo) => !todo.completed);
@@ -31,6 +34,7 @@ const ButtonAppBar = ({ username }: Props) => {
 	}
 
 	const handleUserLogOut = () => {
+		setUser(null);
 		localStorage.removeItem('access_token');
 	};
 
