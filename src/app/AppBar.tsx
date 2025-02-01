@@ -5,6 +5,7 @@ import {
 	Box,
 	Button,
 	IconButton,
+	MenuItem,
 	Stack,
 	styled,
 	ToggleButton,
@@ -14,17 +15,28 @@ import {
 	useColorScheme,
 } from '@mui/material';
 import { Menu, Nightlight, WbSunny } from '@mui/icons-material';
+import { useTodosStore } from '../entities/Todo/model/store/useTodosStore.ts';
+import { UserType } from '../entities/User/model/userType.ts';
+import { Dispatch, SetStateAction } from 'react';
 
 type Props = {
 	username?: string;
+	setUser: Dispatch<SetStateAction<UserType | null>>;
 };
 
-const ButtonAppBar = ({ username }: Props) => {
+const ButtonAppBar = ({ username, setUser }: Props) => {
 	const { mode, setMode } = useColorScheme();
+	const todos = useTodosStore((store) => store.todos);
+	const undoneTodos = todos.filter((todo) => !todo.completed);
 
 	if (!mode) {
 		return null;
 	}
+
+	const handleUserLogOut = () => {
+		setUser(null);
+		localStorage.removeItem('access_token');
+	};
 
 	const handleToggle = () => {
 		setMode(mode === 'light' ? 'dark' : 'light');
@@ -58,6 +70,7 @@ const ButtonAppBar = ({ username }: Props) => {
 			},
 		},
 	}));
+
 	return (
 		<Box sx={{ flexGrow: 1 }}>
 			<AppBar position="fixed">
@@ -74,7 +87,7 @@ const ButtonAppBar = ({ username }: Props) => {
 					<Stack direction={'row'} spacing={2} style={{ flexGrow: 1 }}>
 						{username && (
 							<Typography variant="h6" component="div">
-								Todos
+								Todos{' ' + undoneTodos.length}
 							</Typography>
 						)}
 						<Typography variant="h6" component="div">
@@ -94,21 +107,24 @@ const ButtonAppBar = ({ username }: Props) => {
 							{mode === 'dark' ? <WbSunny /> : <Nightlight />}
 						</ToggleButton>
 						{username ? (
-							<StyledBadge
-								overlap="circular"
-								anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
-								variant="dot"
-							>
-								<Tooltip title={username}>
-									<Avatar
-										src={''}
-										alt={username}
-										sx={{ marginTop: '5px', textTransform: 'capitalize' }}
-									>
-										{username[0]}
-									</Avatar>
-								</Tooltip>
-							</StyledBadge>
+							<>
+								<StyledBadge
+									overlap="circular"
+									anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+									variant="dot"
+								>
+									<Tooltip title={username}>
+										<Avatar
+											src={''}
+											alt={username}
+											sx={{ marginTop: '5px', textTransform: 'capitalize' }}
+										>
+											{username[0]}
+										</Avatar>
+									</Tooltip>
+								</StyledBadge>
+								<MenuItem onClick={handleUserLogOut}>Log out</MenuItem>
+							</>
 						) : (
 							<Button color="inherit">Login</Button>
 						)}
