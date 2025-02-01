@@ -1,10 +1,10 @@
 import { TodoType } from '../model/todoType.ts';
 import {
-	Button,
 	Card,
 	CardActions,
 	CardContent,
 	Checkbox,
+	IconButton,
 	Typography,
 } from '@mui/material';
 import { Delete } from '@mui/icons-material';
@@ -35,9 +35,12 @@ export const Todo = ({ todo, setTodo }: TodoProps) => {
 			</CardContent>
 			<CardActions>
 				<Checkbox checked={todo.completed} onClick={handleCheckboxClick} />
-				<Button onClick={handleDeleteTask}>
+				<IconButton aria-label="delete" size="large" onClick={handleDeleteTask}>
 					<Delete />
-				</Button>
+				</IconButton>
+				<Typography sx={{ color: 'text.secondary', fontSize: 10 }}>
+					{todo.createdAt}
+				</Typography>
 			</CardActions>
 		</Card>
 	);

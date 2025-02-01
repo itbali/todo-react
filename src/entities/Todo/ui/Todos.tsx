@@ -49,24 +49,28 @@ const Todos = () => {
 	};
 	return (
 		<Container>
-			<Input
-				placeholder={'enter title'}
-				onChange={handleTitleChange}
-				value={newTodoTitle}
-			/>
-			<Input
-				placeholder={'enter description'}
-				onChange={handleDescriptionChange}
-				value={newTodoDescription}
-			/>
-			<Button
-				variant={'outlined'}
-				disabled={!newTodoTitle}
-				onClick={handleAddTodo}
-			>
-				Add Todo
-			</Button>
-			<Stack spacing={2} direction="row" flexWrap="wrap">
+			<Stack direction="row" sx={{ marginBottom: '20px' }}>
+				<Input
+					placeholder={'enter title'}
+					onChange={handleTitleChange}
+					value={newTodoTitle}
+				/>
+				<Input
+					placeholder={'enter description'}
+					onChange={handleDescriptionChange}
+					value={newTodoDescription}
+					sx={{ marginLeft: '10px' }}
+				/>
+				<Button
+					variant={'text'}
+					disabled={!newTodoTitle}
+					onClick={handleAddTodo}
+					sx={{ marginLeft: '10px' }}
+				>
+					Add Todo
+				</Button>
+			</Stack>
+			<Stack spacing={2} direction="row" flexWrap="wrap" useFlexGap>
 				{todos.map((todo) => {
 					return <Todo todo={todo} key={todo._id} setTodo={setTodo} />;
 				})}
