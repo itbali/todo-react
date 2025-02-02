@@ -1,3 +1,9 @@
+import React, {
+	Dispatch,
+	SetStateAction,
+	SyntheticEvent,
+	useState,
+} from 'react';
 import {
 	Button,
 	Container,
@@ -15,12 +21,6 @@ import {
 	Visibility,
 	VisibilityOff,
 } from '@mui/icons-material';
-import React, {
-	SyntheticEvent,
-	useState,
-	SetStateAction,
-	Dispatch,
-} from 'react';
 import { jwtDecode } from 'jwt-decode';
 import { UserType } from '../model/userType.ts';
 import { rootApi } from '../../../shared/api/rootApi.ts';
@@ -37,13 +37,13 @@ const Auth = ({ setUser }: AuthProps) => {
 	const [loading, setLoading] = useState(false);
 	const [loginFormName, setLoginFormName] = useState('login');
 	const [showPassword, setShowPassword] = useState(false);
-
 	const { enqueueSnackbar } = useSnackbar();
 
 	const handleClearFields = () => {
 		setEmail('');
 		setPassword('');
 	};
+
 	const handleEmailChange = (
 		e: SyntheticEvent<HTMLTextAreaElement | HTMLInputElement>,
 	) => {
@@ -65,39 +65,35 @@ const Auth = ({ setUser }: AuthProps) => {
 			});
 
 			const accessToken = loginData.data.access_token;
-			localStorage.setItem('access_Token', accessToken);
+			localStorage.setItem('access_token', accessToken);
 			console.warn(jwtDecode(accessToken));
 			setUser(loginData.data);
-			enqueueSnackbar('Welcome back!', { variant: 'success' });
+			enqueueSnackbar('Welcome to Your Account', { variant: 'success' });
 			handleClearFields();
 		} catch (error) {
 			const axiosError = error as AxiosError<{ message: string }>;
-			enqueueSnackbar(axiosError.response?.data.message || 'Unknown error', {
+			enqueueSnackbar(axiosError.response?.data.message || 'Unknown Error', {
 				variant: 'error',
 			});
 		} finally {
 			setLoading(false);
 		}
 	};
+
 	const handleRegister = async () => {
 		setLoading(true);
 		try {
-			const registerResponse = await fetch(
-				'https://todos-be.vercel.app/auth/register',
-				{
-					method: 'POST',
-					mode: 'cors',
-					body: JSON.stringify({ username: email, password }),
-					headers: { 'Content-Type': 'application/json' },
-				},
-			);
-
-			if (!registerResponse.ok) {
-				throw new Error('Username already exists');
-			}
+			await rootApi.post<UserType>('/auth/register', {
+				username: email,
+				password: password,
+			});
+			enqueueSnackbar('Successfully registered!', { variant: 'success' });
 			handleClearFields();
 		} catch (error) {
-			alert(error);
+			const axiosError = error as AxiosError<{ message: string }>;
+			enqueueSnackbar(axiosError.response?.data.message || 'Unknown Error', {
+				variant: 'error',
+			});
 		} finally {
 			setLoading(false);
 		}
@@ -109,8 +105,8 @@ const Auth = ({ setUser }: AuthProps) => {
 	) => {
 		setLoginFormName(newAlignment);
 	};
-	const handleClickShowPassword = () => setShowPassword(!showPassword);
 
+	const handleClickShowPassword = () => setShowPassword(!showPassword);
 	return (
 		<Container maxWidth={'sm'}>
 			<ToggleButtonGroup
@@ -186,14 +182,6 @@ const Auth = ({ setUser }: AuthProps) => {
 							},
 						}}
 					/>
-					<Button
-						onClick={handleClearFields}
-						variant={'outlined'}
-						size={'small'}
-						disabled={loading}
-					>
-						Clear Fields
-					</Button>
 					<Button
 						onClick={handleLogin}
 						variant={'contained'}

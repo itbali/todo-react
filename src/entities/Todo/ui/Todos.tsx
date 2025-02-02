@@ -16,11 +16,11 @@ type TodoProps = {
 };
 
 const Todo = ({ todo, setTodo }: TodoProps) => {
-	const handleCheckClick = () => {
+	const handleCheckboxClick = () => {
 		setTodo({ ...todo, completed: !todo.completed });
 	};
 	return (
-		<Card variant="outlined" sx={{ maxWidth: 200 }}>
+		<Card variant="outlined" sx={{ MaxWidth: 200 }}>
 			<CardContent>
 				<Typography gutterBottom sx={{ color: 'text.secondary', fontSize: 14 }}>
 					{todo.title}
@@ -28,7 +28,7 @@ const Todo = ({ todo, setTodo }: TodoProps) => {
 				<Typography variant="body2">{todo.description}</Typography>
 			</CardContent>
 			<CardActions>
-				<Checkbox checked={todo.completed} onClick={handleCheckClick} />
+				<Checkbox checked={todo.completed} onClick={handleCheckboxClick} />
 			</CardActions>
 		</Card>
 	);
@@ -46,9 +46,8 @@ const Todos = () => {
 		});
 		setTodos(updatedTodos);
 	};
-
 	return (
-		<Stack flexWrap={'wrap'} spacing={2} direction={'row'}>
+		<Stack spacing={2} direction="row" flexWrap="wrap">
 			{todos.map((todo) => {
 				return <Todo todo={todo} key={todo._id} setTodo={setTodo} />;
 			})}
