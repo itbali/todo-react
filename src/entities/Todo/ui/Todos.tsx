@@ -13,12 +13,15 @@ const Todos = () => {
 	const setTodos = useTodosStore((state) => state.setTodos);
 
 	const setTodo = (todo: TodoType) => {
+		//console.log({ todo });
 		const updatedTodos = todos.map((t) => {
 			if (t._id === todo._id) {
 				return todo;
 			}
 			return t;
 		});
+
+		console.log({ updatedTodos });
 		setTodos(updatedTodos);
 	};
 

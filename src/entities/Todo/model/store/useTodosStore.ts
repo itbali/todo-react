@@ -13,6 +13,6 @@ export const useTodosStore = create<TodosState>((set) => {
 		todos: mockTodos,
 		addTodo: (newTodo: TodoType) =>
 			set((state) => ({ todos: [newTodo, ...state.todos] })),
-		setTodos: (todos: TodoType[]) => ({ todos }),
+		setTodos: (todos: TodoType[]) => set(() => ({ todos })),
 	};
 });
