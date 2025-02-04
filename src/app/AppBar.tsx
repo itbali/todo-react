@@ -16,16 +16,12 @@ import {
 } from '@mui/material';
 import { Menu, Nightlight, WbSunny } from '@mui/icons-material';
 import { useTodosStore } from '../entities/Todo/model/store/useTodosStore.ts';
-import { UserType } from '../entities/User/model/userType.ts';
-import { Dispatch, SetStateAction } from 'react';
+import { useUserStore } from '../entities/User/model/store/useUserStore.ts';
 
-type Props = {
-	username?: string;
-	setUser: Dispatch<SetStateAction<UserType | null>>;
-};
-
-const ButtonAppBar = ({ username, setUser }: Props) => {
+const ButtonAppBar = () => {
 	const { mode, setMode } = useColorScheme();
+	const user = useUserStore((state) => state.user);
+	const removeUser = useUserStore((state) => state.removeUser);
 	const todos = useTodosStore((store) => store.todos);
 	const undoneTodos = todos.filter((todo) => !todo.completed);
 
@@ -34,7 +30,7 @@ const ButtonAppBar = ({ username, setUser }: Props) => {
 	}
 
 	const handleUserLogOut = () => {
-		setUser(null);
+		removeUser();
 		localStorage.removeItem('access_token');
 	};
 
@@ -85,7 +81,7 @@ const ButtonAppBar = ({ username, setUser }: Props) => {
 						<Menu />
 					</IconButton>
 					<Stack direction={'row'} spacing={2} style={{ flexGrow: 1 }}>
-						{username && (
+						{user && (
 							<Typography variant="h6" component="div">
 								Todos{' ' + undoneTodos.length}
 							</Typography>
@@ -106,20 +102,20 @@ const ButtonAppBar = ({ username, setUser }: Props) => {
 						>
 							{mode === 'dark' ? <WbSunny /> : <Nightlight />}
 						</ToggleButton>
-						{username ? (
+						{user ? (
 							<>
 								<StyledBadge
 									overlap="circular"
 									anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
 									variant="dot"
 								>
-									<Tooltip title={username}>
+									<Tooltip title={user.username}>
 										<Avatar
 											src={''}
-											alt={username}
+											alt={user.username}
 											sx={{ marginTop: '5px', textTransform: 'capitalize' }}
 										>
-											{username[0]}
+											{user.username[0]}
 										</Avatar>
 									</Tooltip>
 								</StyledBadge>

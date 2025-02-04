@@ -1,9 +1,4 @@
-import React, {
-	Dispatch,
-	SetStateAction,
-	SyntheticEvent,
-	useState,
-} from 'react';
+import React, { SyntheticEvent, useState } from 'react';
 import {
 	Button,
 	Container,
@@ -21,23 +16,20 @@ import {
 	Visibility,
 	VisibilityOff,
 } from '@mui/icons-material';
-import { jwtDecode } from 'jwt-decode';
 import { UserType } from '../model/userType.ts';
 import { rootApi } from '../../../shared/api/rootApi.ts';
 import { useSnackbar } from 'notistack';
 import { AxiosError } from 'axios';
+import { useUserStore } from '../model/store/useUserStore.ts';
 
-type AuthProps = {
-	setUser: Dispatch<SetStateAction<UserType | null>>;
-};
-
-const Auth = ({ setUser }: AuthProps) => {
+const Auth = () => {
 	const [email, setEmail] = useState('');
 	const [password, setPassword] = useState('');
 	const [loading, setLoading] = useState(false);
 	const [loginFormName, setLoginFormName] = useState('login');
 	const [showPassword, setShowPassword] = useState(false);
 	const { enqueueSnackbar } = useSnackbar();
+	const addUser = useUserStore((state) => state.addUser);
 
 	const handleClearFields = () => {
 		setEmail('');
@@ -66,8 +58,7 @@ const Auth = ({ setUser }: AuthProps) => {
 
 			const accessToken = loginData.data.access_token;
 			localStorage.setItem('access_token', accessToken);
-			console.warn(jwtDecode(accessToken));
-			setUser(loginData.data);
+			addUser(loginData.data);
 			enqueueSnackbar('Welcome to Your Account', { variant: 'success' });
 			handleClearFields();
 		} catch (error) {

@@ -9,7 +9,7 @@ import {
 } from '@mui/material';
 import { Delete } from '@mui/icons-material';
 import { useTodosStore } from '../model/store/useTodosStore.ts';
-import { dateConverter } from '../../../shared/utils/dateConverter.tsx';
+import { dateConverter } from '../../../shared/utils/DateConverter.ts';
 
 type TodoProps = {
 	todo: TodoType;
