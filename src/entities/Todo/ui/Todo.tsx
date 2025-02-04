@@ -15,8 +15,6 @@ export const Todo = ({ todo, setTodo }: TodoProps) => {
 	const handleCheckboxClick = () => {
 		setTodo?.({ ...todo, completed: !todo.completed });
 	};
-
-	//console.log({ todo });
 	return (
 		<Card variant="outlined" sx={{ MaxWidth: 200 }}>
 			<CardContent>
