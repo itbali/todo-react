@@ -9,6 +9,7 @@ import {
 } from '@mui/material';
 import { Delete } from '@mui/icons-material';
 import { useTodosStore } from '../model/store/useTodosStore.ts';
+import { dateConverter } from '../../../shared/utils/dateConverter.tsx';
 
 type TodoProps = {
 	todo: TodoType;
@@ -25,6 +26,7 @@ export const Todo = ({ todo, setTodo }: TodoProps) => {
 	const handleDeleteTask = () => {
 		deleteTodo(todo._id);
 	};
+
 	return (
 		<Card variant="outlined" sx={{ MaxWidth: 200 }}>
 			<CardContent>
@@ -38,8 +40,8 @@ export const Todo = ({ todo, setTodo }: TodoProps) => {
 				<IconButton aria-label="delete" size="large" onClick={handleDeleteTask}>
 					<Delete />
 				</IconButton>
-				<Typography sx={{ color: 'text.secondary', fontSize: 10 }}>
-					{todo.createdAt}
+				<Typography sx={{ color: 'text.secondary', fontSize: 12 }}>
+					{dateConverter(todo.createdAt)}
 				</Typography>
 			</CardActions>
 		</Card>
