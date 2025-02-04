@@ -1,22 +1,23 @@
 import {
 	AppBar,
 	Avatar,
-	Badge,
 	Box,
 	Button,
 	IconButton,
+	Menu,
 	MenuItem,
 	Stack,
-	styled,
 	ToggleButton,
 	Toolbar,
 	Tooltip,
 	Typography,
 	useColorScheme,
 } from '@mui/material';
-import { Menu, Nightlight, WbSunny } from '@mui/icons-material';
+import { Nightlight, WbSunny } from '@mui/icons-material';
+import MenuIcon from '@mui/icons-material/Menu';
 import { useTodosStore } from '../entities/Todo/model/store/useTodosStore.ts';
 import { useUserStore } from '../entities/User/model/store/useUserStore.ts';
+import { useState } from 'react';
 
 const ButtonAppBar = () => {
 	const { mode, setMode } = useColorScheme();
@@ -24,6 +25,7 @@ const ButtonAppBar = () => {
 	const removeUser = useUserStore((state) => state.removeUser);
 	const todos = useTodosStore((store) => store.todos);
 	const undoneTodos = todos.filter((todo) => !todo.completed);
+	const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
 
 	if (!mode) {
 		return null;
@@ -32,40 +34,20 @@ const ButtonAppBar = () => {
 	const handleUserLogOut = () => {
 		removeUser();
 		localStorage.removeItem('access_token');
+		setAnchorEl(null);
 	};
 
 	const handleToggle = () => {
 		setMode(mode === 'light' ? 'dark' : 'light');
 	};
 
-	const StyledBadge = styled(Badge)(({ theme }) => ({
-		'& .MuiBadge-badge': {
-			backgroundColor: '#44b700 !important',
-			color: '#44b700 !important',
-			boxShadow: `0 0 0 2px ${theme.palette.background.paper}`,
-			'&::after': {
-				position: 'absolute',
-				top: 0,
-				left: 0,
-				width: '100%',
-				height: '100%',
-				borderRadius: '50%',
-				animation: 'ripple 1.2s infinite ease-in-out',
-				border: '1px solid currentColor',
-				content: '""',
-			},
-		},
-		'@keyframes ripple': {
-			'0%': {
-				transform: 'scale(.8)',
-				opacity: 1,
-			},
-			'100%': {
-				transform: 'scale(2.4)',
-				opacity: 0,
-			},
-		},
-	}));
+	const handleMenu = (event: React.MouseEvent<HTMLElement>) => {
+		setAnchorEl(event.currentTarget as HTMLElement);
+	};
+
+	const handleClose = () => {
+		setAnchorEl(null);
+	};
 
 	return (
 		<Box sx={{ flexGrow: 1 }}>
@@ -78,7 +60,7 @@ const ButtonAppBar = () => {
 						aria-label="menu"
 						sx={{ mr: 2 }}
 					>
-						<Menu />
+						<MenuIcon />
 					</IconButton>
 					<Stack direction={'row'} spacing={2} style={{ flexGrow: 1 }}>
 						{user && (
@@ -104,22 +86,36 @@ const ButtonAppBar = () => {
 						</ToggleButton>
 						{user ? (
 							<>
-								<StyledBadge
-									overlap="circular"
-									anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
-									variant="dot"
+								<Tooltip title={user.username}>
+									<Avatar
+										src={''}
+										alt={user.username}
+										sx={{
+											marginTop: '5px !important',
+											textTransform: 'capitalize',
+										}}
+										onClick={handleMenu}
+									>
+										{user.username[0]}
+									</Avatar>
+								</Tooltip>
+								<Menu
+									id="menu-appbar"
+									anchorEl={anchorEl}
+									anchorOrigin={{
+										vertical: 'top',
+										horizontal: 'right',
+									}}
+									keepMounted
+									transformOrigin={{
+										vertical: 'top',
+										horizontal: 'right',
+									}}
+									open={Boolean(anchorEl)}
+									onClose={handleClose}
 								>
-									<Tooltip title={user.username}>
-										<Avatar
-											src={''}
-											alt={user.username}
-											sx={{ marginTop: '5px', textTransform: 'capitalize' }}
-										>
-											{user.username[0]}
-										</Avatar>
-									</Tooltip>
-								</StyledBadge>
-								<MenuItem onClick={handleUserLogOut}>Log out</MenuItem>
+									<MenuItem onClick={handleUserLogOut}>Log out</MenuItem>
+								</Menu>
 							</>
 						) : (
 							<Button color="inherit">Login</Button>
