@@ -15,15 +15,14 @@ import {
 } from '@mui/material';
 import { Menu, Nightlight, WbSunny } from '@mui/icons-material';
 import { useTodosStore } from '../entities/Todo/model/store/useTodosStore.ts';
+import { useUserStore } from '../entities/User/model/provider/UserContext.tsx';
 
-type Props = {
-	username?: string;
-};
-
-const ButtonAppBar = ({ username }: Props) => {
+const ButtonAppBar = () => {
 	const { mode, setMode } = useColorScheme();
 	const todos = useTodosStore((state) => state.todos);
 	const undoneTodos = todos.filter((todo) => !todo.completed);
+	const { user } = useUserStore();
+	const username = user?.username;
 
 	if (!mode) {
 		return null;
