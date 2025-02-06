@@ -12,12 +12,12 @@ export const autoLogin = () => {
 				};
 			}
 			localStorage.removeItem('access_token');
-			return null;
+			return undefined;
 		}
 	} catch (error) {
 		console.error(error);
 		localStorage.removeItem('access_token');
-		return null;
+		return undefined;
 	}
-	return null;
+	return undefined;
 };

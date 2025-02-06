@@ -1,9 +1,4 @@
-import React, {
-	Dispatch,
-	SetStateAction,
-	SyntheticEvent,
-	useState,
-} from 'react';
+import React, { SyntheticEvent, useState } from 'react';
 import {
 	Button,
 	Container,
@@ -26,18 +21,16 @@ import { UserType } from '../model/userType.ts';
 import { rootApi } from '../../../shared/api/rootApi.ts';
 import { useSnackbar } from 'notistack';
 import { AxiosError } from 'axios';
+import { useUserStore } from '../model/provider/UserContext.tsx';
 
-type AuthProps = {
-	setUser: Dispatch<SetStateAction<UserType | null>>;
-};
-
-const Auth = ({ setUser }: AuthProps) => {
+const Auth = () => {
 	const [email, setEmail] = useState('');
 	const [password, setPassword] = useState('');
 	const [loading, setLoading] = useState(false);
 	const [loginFormName, setLoginFormName] = useState('login');
 	const [showPassword, setShowPassword] = useState(false);
 	const { enqueueSnackbar } = useSnackbar();
+	const { setUser } = useUserStore();
 
 	const handleClearFields = () => {
 		setEmail('');

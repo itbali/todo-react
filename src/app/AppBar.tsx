@@ -14,13 +14,12 @@ import {
 	useColorScheme,
 } from '@mui/material';
 import { Menu, Nightlight, WbSunny } from '@mui/icons-material';
+import { useUserStore } from '../entities/User/model/provider/UserContext.tsx';
 
-type Props = {
-	username?: string;
-};
-
-const ButtonAppBar = ({ username }: Props) => {
+const ButtonAppBar = () => {
 	const { mode, setMode } = useColorScheme();
+	const { user } = useUserStore();
+	const username = user?.username;
 
 	if (!mode) {
 		return null;
