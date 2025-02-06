@@ -7,18 +7,19 @@ import {
 	Typography,
 } from '@mui/material';
 import { TodoType } from '../model/todoType.ts';
-import { mockTodos } from '../model/mockTodos.ts';
-import { useState } from 'react';
+import { useTodosStore } from '../model/provider/TodosContext.tsx';
 
 type TodoProps = {
 	todo: TodoType;
-	setTodo: (todo: TodoType) => void;
 };
 
-const Todo = ({ todo, setTodo }: TodoProps) => {
+const Todo = ({ todo }: TodoProps) => {
+	const { setTodos } = useTodosStore();
+
 	const handleCheckboxClick = () => {
-		setTodo({ ...todo, completed: !todo.completed });
+		setTodos({ ...todo, completed: !todo.completed });
 	};
+
 	return (
 		<Card variant="outlined" sx={{ MaxWidth: 200 }}>
 			<CardContent>
@@ -35,22 +36,13 @@ const Todo = ({ todo, setTodo }: TodoProps) => {
 };
 
 const Todos = () => {
-	const [todos, setTodos] = useState<TodoType[]>(mockTodos);
+	const { todos } = useTodosStore();
 
-	const setTodo = (todo: TodoType) => {
-		const updatedTodos = todos.map((t) => {
-			if (t._id === todo._id) {
-				return todo;
-			}
-			return t;
-		});
-		setTodos(updatedTodos);
-	};
 	return (
 		<Stack spacing={2} direction="row" flexWrap="wrap">
-			{todos.map((todo) => {
-				return <Todo todo={todo} key={todo._id} setTodo={setTodo} />;
-			})}
+			{todos.map((todo) => (
+				<Todo todo={todo} key={todo._id} />
+			))}
 		</Stack>
 	);
 };

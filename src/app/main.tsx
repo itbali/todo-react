@@ -5,6 +5,7 @@ import { createTheme, ThemeProvider } from '@mui/material/styles';
 import App from './App.tsx';
 import { SnackbarProvider } from 'notistack';
 import { UserProvider } from '../entities/User/model/provider/UserProvider.tsx';
+import { TodosProvider } from '../entities/Todo/model/provider/TodosProvider.tsx';
 
 const theme = createTheme({
 	colorSchemes: {
@@ -14,11 +15,13 @@ const theme = createTheme({
 
 createRoot(document.getElementById('root')!).render(
 	<UserProvider>
-		<SnackbarProvider>
-			<ThemeProvider theme={theme}>
-				<CssBaseline />
-				<App />
-			</ThemeProvider>
-		</SnackbarProvider>
+		<TodosProvider>
+			<SnackbarProvider>
+				<ThemeProvider theme={theme}>
+					<CssBaseline />
+					<App />
+				</ThemeProvider>
+			</SnackbarProvider>
+		</TodosProvider>
 	</UserProvider>,
 );
