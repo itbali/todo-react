@@ -1,13 +1,13 @@
 import { Button, Container, Input, Stack } from '@mui/material';
-import { useTodosStore } from '../model/store/useTodosStore.ts';
+import { addTodo, selectTodos, setTodos } from '../model/store/todosStore.ts';
 import { Todo } from './Todo.tsx';
 import { ChangeEvent, useState } from 'react';
 import { TodoType } from '../model/todoType.ts';
+import { useAppDispatch, useAppSelector } from '../../../app/store.ts';
 
 const Todos = () => {
-	const todos = useTodosStore((state) => state.todos);
-	const addTodo = useTodosStore((state) => state.addTodo);
-	const setTodos = useTodosStore((state) => state.setTodos);
+	const todos = useAppSelector(selectTodos);
+	const dispatch = useAppDispatch();
 	const [newTodoTitle, setNewTodoTitle] = useState<string>('');
 	const [newTodoDescription, setNewTodoDescription] = useState<string>('');
 
@@ -18,7 +18,7 @@ const Todos = () => {
 			}
 			return t;
 		});
-		setTodos(updatedTodos);
+		dispatch(setTodos(updatedTodos));
 	};
 
 	const handleTitleChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -44,7 +44,7 @@ const Todos = () => {
 			updatedAt: new Date().toISOString(),
 			order: todos.length + 1,
 		};
-		addTodo(newTodo);
+		dispatch(addTodo(newTodo));
 		handleClearFields();
 	};
 	return (
