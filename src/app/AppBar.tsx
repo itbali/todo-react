@@ -15,15 +15,19 @@ import {
 } from '@mui/material';
 import { Nightlight, WbSunny } from '@mui/icons-material';
 import MenuIcon from '@mui/icons-material/Menu';
-import { useTodosStore } from '../entities/Todo/model/store/useTodosStore.ts';
-import { useUserStore } from '../entities/User/model/store/useUserStore.ts';
+import { selectTodos } from '../entities/Todo/model/store/todosStore.ts';
+import {
+	removerUser,
+	selectUser,
+} from '../entities/User/model/store/userStore.ts';
 import { useState } from 'react';
+import { useAppDispatch, useAppSelector } from './store.ts';
 
 const ButtonAppBar = () => {
 	const { mode, setMode } = useColorScheme();
-	const user = useUserStore((state) => state.user);
-	const removeUser = useUserStore((state) => state.removeUser);
-	const todos = useTodosStore((store) => store.todos);
+	const user = useAppSelector(selectUser);
+	const dispatch = useAppDispatch();
+	const todos = useAppSelector(selectTodos);
 	const undoneTodos = todos.filter((todo) => !todo.completed);
 	const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
 
@@ -32,7 +36,7 @@ const ButtonAppBar = () => {
 	}
 
 	const handleUserLogOut = () => {
-		removeUser();
+		dispatch(removerUser());
 		localStorage.removeItem('access_token');
 		setAnchorEl(null);
 	};

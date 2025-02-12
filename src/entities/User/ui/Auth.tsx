@@ -20,16 +20,21 @@ import { UserType } from '../model/userType.ts';
 import { rootApi } from '../../../shared/api/rootApi.ts';
 import { useSnackbar } from 'notistack';
 import { AxiosError } from 'axios';
-import { useUserStore } from '../model/store/useUserStore.ts';
+import {
+	selectIsLoading,
+	setIsLoading,
+	setUser,
+} from '../model/store/userStore.ts';
+import { useAppDispatch, useAppSelector } from '../../../app/store.ts';
 
 const Auth = () => {
 	const [email, setEmail] = useState('');
 	const [password, setPassword] = useState('');
-	const [loading, setLoading] = useState(false);
 	const [loginFormName, setLoginFormName] = useState('login');
 	const [showPassword, setShowPassword] = useState(false);
 	const { enqueueSnackbar } = useSnackbar();
-	const addUser = useUserStore((state) => state.addUser);
+	const loading = useAppSelector(selectIsLoading);
+	const dispatch = useAppDispatch();
 
 	const handleClearFields = () => {
 		setEmail('');
@@ -49,7 +54,7 @@ const Auth = () => {
 	};
 
 	const handleLogin = async () => {
-		setLoading(true);
+		dispatch(setIsLoading(true));
 		try {
 			const loginData = await rootApi.post<UserType>('/auth/login', {
 				username: email,
@@ -58,7 +63,7 @@ const Auth = () => {
 
 			const accessToken = loginData.data.access_token;
 			localStorage.setItem('access_token', accessToken);
-			addUser(loginData.data);
+			dispatch(setUser(loginData.data));
 			enqueueSnackbar('Welcome to Your Account', { variant: 'success' });
 			handleClearFields();
 		} catch (error) {
@@ -67,12 +72,12 @@ const Auth = () => {
 				variant: 'error',
 			});
 		} finally {
-			setLoading(false);
+			dispatch(setIsLoading(false));
 		}
 	};
 
 	const handleRegister = async () => {
-		setLoading(true);
+		dispatch(setIsLoading(true));
 		try {
 			await rootApi.post<UserType>('/auth/register', {
 				username: email,
@@ -86,7 +91,7 @@ const Auth = () => {
 				variant: 'error',
 			});
 		} finally {
-			setLoading(false);
+			dispatch(setIsLoading(false));
 		}
 	};
 

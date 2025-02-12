@@ -8,8 +8,9 @@ import {
 	Typography,
 } from '@mui/material';
 import { Delete } from '@mui/icons-material';
-import { useTodosStore } from '../model/store/useTodosStore.ts';
+import { deleteTodo } from '../model/store/todosStore.ts';
 import { dateConverter } from '../../../shared/utils/DateConverter.ts';
+import { useAppDispatch } from '../../../app/store.ts';
 
 type TodoProps = {
 	todo: TodoType;
@@ -17,14 +18,14 @@ type TodoProps = {
 };
 
 export const Todo = ({ todo, setTodo }: TodoProps) => {
-	const deleteTodo = useTodosStore((state) => state.deleteTodo);
+	const dispatch = useAppDispatch();
 
 	const handleCheckboxClick = () => {
 		setTodo?.({ ...todo, completed: !todo.completed });
 	};
 
 	const handleDeleteTask = () => {
-		deleteTodo(todo._id);
+		dispatch(deleteTodo(todo._id));
 	};
 
 	return (
