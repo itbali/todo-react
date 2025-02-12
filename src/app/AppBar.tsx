@@ -22,6 +22,7 @@ import {
 import { useState } from 'react';
 import { useAppDispatch, useAppSelector } from './store.ts';
 import { selectUndoneTodosLength } from '../entities/Todo/model/store/selectors/selectUndoneTodos.ts';
+import { NavLink, useLocation, useNavigate } from 'react-router';
 
 const ButtonAppBar = () => {
 	const { mode, setMode } = useColorScheme();
@@ -29,6 +30,10 @@ const ButtonAppBar = () => {
 	const dispatch = useAppDispatch();
 	const undoneTodos = useAppSelector(selectUndoneTodosLength);
 	const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
+
+	const location = useLocation();
+	const navigate = useNavigate();
+	const isAboutPage = location.pathname === '/about';
 
 	if (!mode) {
 		return null;
@@ -72,7 +77,9 @@ const ButtonAppBar = () => {
 							</Typography>
 						)}
 						<Typography variant="h6" component="div">
-							About
+							<NavLink to={isAboutPage ? '/' : '/about'}>
+								{isAboutPage ? 'Home' : 'About'}
+							</NavLink>
 						</Typography>
 					</Stack>
 
@@ -121,7 +128,14 @@ const ButtonAppBar = () => {
 								</Menu>
 							</>
 						) : (
-							<Button color="inherit">Login</Button>
+							<Button
+								color="inherit"
+								onClick={() => {
+									navigate('/');
+								}}
+							>
+								Login
+							</Button>
 						)}
 					</Stack>
 				</Toolbar>
