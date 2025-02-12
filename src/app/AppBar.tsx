@@ -15,20 +15,19 @@ import {
 } from '@mui/material';
 import { Nightlight, WbSunny } from '@mui/icons-material';
 import MenuIcon from '@mui/icons-material/Menu';
-import { selectTodos } from '../entities/Todo/model/store/todosStore.ts';
 import {
 	removerUser,
 	selectUser,
 } from '../entities/User/model/store/userStore.ts';
 import { useState } from 'react';
 import { useAppDispatch, useAppSelector } from './store.ts';
+import { selectUndoneTodosLength } from '../entities/Todo/model/store/selectors/selectUndoneTodos.ts';
 
 const ButtonAppBar = () => {
 	const { mode, setMode } = useColorScheme();
 	const user = useAppSelector(selectUser);
 	const dispatch = useAppDispatch();
-	const todos = useAppSelector(selectTodos);
-	const undoneTodos = todos.filter((todo) => !todo.completed);
+	const undoneTodos = useAppSelector(selectUndoneTodosLength);
 	const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
 
 	if (!mode) {
@@ -69,7 +68,7 @@ const ButtonAppBar = () => {
 					<Stack direction={'row'} spacing={2} style={{ flexGrow: 1 }}>
 						{user && (
 							<Typography variant="h6" component="div">
-								Todos{' ' + undoneTodos.length}
+								Todos{' ' + undoneTodos}
 							</Typography>
 						)}
 						<Typography variant="h6" component="div">
