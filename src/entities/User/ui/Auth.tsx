@@ -1,99 +1,17 @@
-import React, { SyntheticEvent, useState } from 'react';
-import {
-	Button,
-	Container,
-	FilledInput,
-	IconButton,
-	InputAdornment,
-	Stack,
-	TextField,
-	ToggleButton,
-	ToggleButtonGroup,
-} from '@mui/material';
-import {
-	AccountCircle,
-	Lock,
-	Visibility,
-	VisibilityOff,
-} from '@mui/icons-material';
-import { UserType } from '../model/userType.ts';
-import { rootApi } from '../../../shared/api/rootApi.ts';
-import { useSnackbar } from 'notistack';
-import { AxiosError } from 'axios';
-import {
-	selectIsLoading,
-	setIsLoading,
-	setUser,
-} from '../model/store/userStore.ts';
-import { useAppDispatch, useAppSelector } from '../../../app/store.ts';
+import React, { useEffect, useState } from 'react';
+import { Container, ToggleButton, ToggleButtonGroup } from '@mui/material';
+import { selectIsLoading } from '../model/store/userStore.ts';
+import { useAppSelector } from '../../../app/store.ts';
+import { Route, Routes, useNavigate } from 'react-router';
+import Login from '../../App/ui/Login.tsx';
+import Register from '../../App/ui/Register.tsx';
 
 const Auth = () => {
-	const [email, setEmail] = useState('');
-	const [password, setPassword] = useState('');
 	const [loginFormName, setLoginFormName] = useState('login');
-	const [showPassword, setShowPassword] = useState(false);
-	const { enqueueSnackbar } = useSnackbar();
+
 	const loading = useAppSelector(selectIsLoading);
-	const dispatch = useAppDispatch();
 
-	const handleClearFields = () => {
-		setEmail('');
-		setPassword('');
-	};
-
-	const handleEmailChange = (
-		e: SyntheticEvent<HTMLTextAreaElement | HTMLInputElement>,
-	) => {
-		setEmail(e.currentTarget.value);
-	};
-
-	const handlePasswordChange = (
-		e: SyntheticEvent<HTMLTextAreaElement | HTMLInputElement>,
-	) => {
-		setPassword(e.currentTarget.value);
-	};
-
-	const handleLogin = async () => {
-		dispatch(setIsLoading(true));
-		try {
-			const loginData = await rootApi.post<UserType>('/auth/login', {
-				username: email,
-				password: password,
-			});
-
-			const accessToken = loginData.data.access_token;
-			localStorage.setItem('access_token', accessToken);
-			dispatch(setUser(loginData.data));
-			enqueueSnackbar('Welcome to Your Account', { variant: 'success' });
-			handleClearFields();
-		} catch (error) {
-			const axiosError = error as AxiosError<{ message: string }>;
-			enqueueSnackbar(axiosError.response?.data.message || 'Unknown Error', {
-				variant: 'error',
-			});
-		} finally {
-			dispatch(setIsLoading(false));
-		}
-	};
-
-	const handleRegister = async () => {
-		dispatch(setIsLoading(true));
-		try {
-			await rootApi.post<UserType>('/auth/register', {
-				username: email,
-				password: password,
-			});
-			enqueueSnackbar('Successfully registered!', { variant: 'success' });
-			handleClearFields();
-		} catch (error) {
-			const axiosError = error as AxiosError<{ message: string }>;
-			enqueueSnackbar(axiosError.response?.data.message || 'Unknown Error', {
-				variant: 'error',
-			});
-		} finally {
-			dispatch(setIsLoading(false));
-		}
-	};
+	const navigate = useNavigate();
 
 	const handleChange = (
 		_event: React.MouseEvent<HTMLElement>,
@@ -102,7 +20,14 @@ const Auth = () => {
 		setLoginFormName(newAlignment);
 	};
 
-	const handleClickShowPassword = () => setShowPassword(!showPassword);
+	useEffect(() => {
+		if (loginFormName === 'login') {
+			navigate('/auth/login');
+		} else {
+			navigate('/auth/register');
+		}
+	}, [loginFormName]);
+
 	return (
 		<Container maxWidth={'sm'}>
 			<ToggleButtonGroup
@@ -122,145 +47,10 @@ const Auth = () => {
 					Register
 				</ToggleButton>
 			</ToggleButtonGroup>
-			{loginFormName === 'login' ? (
-				<Stack spacing={2}>
-					<TextField
-						type={'email'}
-						value={email}
-						onChange={handleEmailChange}
-						size={'small'}
-						label={'Email'}
-						disabled={loading}
-						variant={'filled'}
-						required
-						slotProps={{
-							input: {
-								startAdornment: (
-									<InputAdornment position={'start'}>
-										<AccountCircle />
-									</InputAdornment>
-								),
-							},
-						}}
-					/>
-					<TextField
-						type={showPassword ? 'text' : 'password'}
-						value={password}
-						onChange={handlePasswordChange}
-						size={'small'}
-						label={'Password'}
-						disabled={loading}
-						variant={'filled'}
-						required
-						slots={{
-							input: FilledInput,
-						}}
-						slotProps={{
-							input: {
-								startAdornment: (
-									<InputAdornment position={'start'}>
-										<Lock />
-									</InputAdornment>
-								),
-								endAdornment: (
-									<InputAdornment position={'end'}>
-										<IconButton
-											aria-label={
-												showPassword ? 'hide password' : 'show password'
-											}
-											onClick={handleClickShowPassword}
-											edge={'end'}
-										>
-											{showPassword ? <VisibilityOff /> : <Visibility />}
-										</IconButton>
-									</InputAdornment>
-								),
-							},
-						}}
-					/>
-					<Button
-						onClick={handleLogin}
-						variant={'contained'}
-						loading={loading}
-						loadingPosition={'start'}
-					>
-						{loading ? 'Loading...' : 'Login'}
-					</Button>
-				</Stack>
-			) : (
-				<Stack spacing={2}>
-					<TextField
-						type={'email'}
-						value={email}
-						onChange={handleEmailChange}
-						size={'small'}
-						label={'Email'}
-						disabled={loading}
-						variant={'filled'}
-						required
-						slotProps={{
-							input: {
-								startAdornment: (
-									<InputAdornment position={'start'}>
-										<AccountCircle />
-									</InputAdornment>
-								),
-							},
-						}}
-					/>
-					<TextField
-						type={showPassword ? 'text' : 'password'}
-						value={password}
-						onChange={handlePasswordChange}
-						size={'small'}
-						label={'Password'}
-						disabled={loading}
-						variant={'filled'}
-						required
-						slots={{
-							input: FilledInput,
-						}}
-						slotProps={{
-							input: {
-								startAdornment: (
-									<InputAdornment position={'start'}>
-										<Lock />
-									</InputAdornment>
-								),
-								endAdornment: (
-									<InputAdornment position={'end'}>
-										<IconButton
-											aria-label={
-												showPassword ? 'hide password' : 'show password'
-											}
-											onClick={handleClickShowPassword}
-											edge={'end'}
-										>
-											{showPassword ? <VisibilityOff /> : <Visibility />}
-										</IconButton>
-									</InputAdornment>
-								),
-							},
-						}}
-					/>
-					<Button
-						onClick={handleClearFields}
-						variant={'outlined'}
-						size={'small'}
-						disabled={loading}
-					>
-						Clear fields
-					</Button>
-					<Button
-						onClick={handleRegister}
-						variant={'contained'}
-						loading={loading}
-						loadingPosition={'start'}
-					>
-						{loading ? 'Loading...' : 'Register'}
-					</Button>
-				</Stack>
-			)}
+			<Routes>
+				<Route path={'/login'} element={<Login />} />
+				<Route path={'/register'} element={<Register />} />
+			</Routes>
 		</Container>
 	);
 };
