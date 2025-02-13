@@ -77,7 +77,10 @@ const ButtonAppBar = () => {
 							</Typography>
 						)}
 						<Typography variant="h6" component="div">
-							<NavLink to={isAboutPage ? '/' : '/about'}>
+							<NavLink
+								to={isAboutPage ? '/' : '/about'}
+								style={{ textDecoration: 'none', color: 'inherit' }}
+							>
 								{isAboutPage ? 'Home' : 'About'}
 							</NavLink>
 						</Typography>
