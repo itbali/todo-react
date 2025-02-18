@@ -57,6 +57,11 @@ const ButtonAppBar = () => {
 		setAnchorEl(null);
 	};
 
+	const handleRedirectToProfile = () => {
+		navigate('/profile');
+		handleClose();
+	};
+
 	return (
 		<Box sx={{ flexGrow: 1 }}>
 			<AppBar position="fixed">
@@ -106,6 +111,7 @@ const ButtonAppBar = () => {
 										sx={{
 											marginTop: '5px !important',
 											textTransform: 'capitalize',
+											boxShadow: 3,
 										}}
 										onClick={handleMenu}
 									>
@@ -127,6 +133,7 @@ const ButtonAppBar = () => {
 									open={Boolean(anchorEl)}
 									onClose={handleClose}
 								>
+									<MenuItem onClick={handleRedirectToProfile}>Profile</MenuItem>
 									<MenuItem onClick={handleUserLogOut}>Log out</MenuItem>
 								</Menu>
 							</>

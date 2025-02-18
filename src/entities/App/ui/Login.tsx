@@ -23,10 +23,8 @@ import { UserType } from '../../User/model/userType.ts';
 import { AxiosError } from 'axios';
 import { useSnackbar } from 'notistack';
 import { useAppDispatch, useAppSelector } from '../../../app/store.ts';
-import { useNavigate } from 'react-router';
 
 const Login = () => {
-	const navigate = useNavigate();
 	const dispatch = useAppDispatch();
 
 	const loading = useAppSelector(selectIsLoading);
@@ -58,6 +56,7 @@ const Login = () => {
 
 	const handleLogin = async () => {
 		dispatch(setIsLoading(true));
+
 		try {
 			const loginData = await rootApi.post<UserType>('/auth/login', {
 				username: email,
@@ -69,9 +68,6 @@ const Login = () => {
 			dispatch(setUser(loginData.data));
 			enqueueSnackbar('Welcome to Your Account', { variant: 'success' });
 			handleClearFields();
-			if (accessToken) {
-				navigate('/');
-			}
 		} catch (error) {
 			const axiosError = error as AxiosError<{ message: string }>;
 			enqueueSnackbar(axiosError.response?.data.message || 'Unknown Error', {
