@@ -38,7 +38,6 @@ const Auth = () => {
 	if (user) {
 		const searchParams = new URLSearchParams(location.search);
 		const back = searchParams.get('back');
-		console.log('Auth:', back);
 
 		return <Navigate to={back || '/'} />;
 	}
