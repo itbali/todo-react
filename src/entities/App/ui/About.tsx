@@ -1,6 +1,8 @@
-import { Container, Stack, Typography } from '@mui/material';
+import { Button, Container, Stack, Typography } from '@mui/material';
+import { To, useNavigate } from 'react-router';
 
 const About = () => {
+	const navigate = useNavigate();
 	return (
 		<Container maxWidth={'sm'}>
 			<Stack spacing={2}>
@@ -8,8 +10,14 @@ const About = () => {
 					About
 				</Typography>
 				<Typography variant="h6" component="div">
-					version 0.0.1
+					version 0.0.2
 				</Typography>
+				<Button
+					variant={'contained'}
+					onClick={() => navigate((-1 as To), { state: { isAboutPage: true } })}
+				>
+					Go back
+				</Button>
 			</Stack>
 		</Container>
 	);

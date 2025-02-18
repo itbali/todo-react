@@ -10,16 +10,7 @@ import { useNavigate } from 'react-router';
 import { useEffect } from 'react';
 
 function App() {
-	const navigate = useNavigate();
-	const user = useAppSelector(selectUser);
-
-	useEffect(() => {
-		if (!user?.access_token) {
-			navigate('/auth/login');
-		}
-	}, [user?.access_token]);
-
-	return <>{user ? <Todos /> : <Auth />}</>;
+	return <Todos />;
 }
 
 export default App;
