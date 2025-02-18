@@ -111,6 +111,7 @@ const ButtonAppBar = () => {
 										sx={{
 											marginTop: '5px !important',
 											textTransform: 'capitalize',
+											boxShadow: 3,
 										}}
 										onClick={handleMenu}
 									>
