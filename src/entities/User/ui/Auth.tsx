@@ -29,10 +29,12 @@ const Auth = () => {
 
 	const handleChange = (
 		_event: React.MouseEvent<HTMLElement>,
-		newAlignment: string,
+		newAlignment: string | null,
 	) => {
-		setLoginFormName(newAlignment);
-		navigate(`/auth/${newAlignment}`);
+		if (newAlignment != null) {
+			setLoginFormName(newAlignment);
+			navigate(`/auth/${newAlignment}`);
+		}
 	};
 
 	if (user) {
