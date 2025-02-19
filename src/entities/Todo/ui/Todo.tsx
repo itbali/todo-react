@@ -54,7 +54,17 @@ export const Todo = ({ todo, setTodo }: TodoProps) => {
 	};
 
 	return (
-		<Card variant="outlined" sx={{ MaxWidth: 200 }}>
+		<Card
+			variant="outlined"
+			sx={(theme) => ({
+				maxWidth: 400,
+				bgcolor: todo.completed
+					? theme.palette.mode === 'light'
+						? '#e1f5fe'
+						: '#01579b'
+					: 'inherit',
+			})}
+		>
 			<CardContent>
 				<Stack>
 					{isEdit ? (
