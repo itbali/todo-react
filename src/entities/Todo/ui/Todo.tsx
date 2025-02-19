@@ -9,7 +9,7 @@ import {
 	Stack,
 	Typography,
 } from '@mui/material';
-import { Delete, Edit } from '@mui/icons-material';
+import { Delete, Edit, Done } from '@mui/icons-material';
 import { deleteTodo } from '../model/store/todosStore.ts';
 import { dateConverter } from '../../../shared/utils/DateConverter.ts';
 import { useAppDispatch } from '../../../app/store.ts';
@@ -84,7 +84,7 @@ export const Todo = ({ todo, setTodo }: TodoProps) => {
 			<CardActions>
 				<Checkbox checked={todo.completed} onClick={handleCheckboxClick} />
 				<IconButton aria-label="edit" size="large" onClick={handleIsEditChange}>
-					<Edit />
+					{isEdit ? <Done /> : <Edit />}
 				</IconButton>
 				<IconButton aria-label="delete" size="large" onClick={handleDeleteTask}>
 					<Delete />
