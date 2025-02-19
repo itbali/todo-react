@@ -6,6 +6,7 @@ import {
 	Container,
 	Input,
 	Stack,
+	Tooltip,
 } from '@mui/material';
 import { addTodo, selectTodos, setTodos } from '../model/store/todosStore.ts';
 import { Todo } from './Todo.tsx';
@@ -71,7 +72,9 @@ const Todos = () => {
 					}}
 				>
 					<AccordionSummary>
-						<AddIcon />
+						<Tooltip title={'Add new todo'}>
+							<AddIcon />
+						</Tooltip>
 					</AccordionSummary>
 					<AccordionDetails>
 						<Input

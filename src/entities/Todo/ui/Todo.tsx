@@ -7,6 +7,7 @@ import {
 	IconButton,
 	Input,
 	Stack,
+	Tooltip,
 	Typography,
 } from '@mui/material';
 import { Delete, Edit, Done } from '@mui/icons-material';
@@ -82,16 +83,30 @@ export const Todo = ({ todo, setTodo }: TodoProps) => {
 				</Stack>
 			</CardContent>
 			<CardActions>
-				<Checkbox checked={todo.completed} onClick={handleCheckboxClick} />
+				<Tooltip title={'Complete'}>
+					<Checkbox checked={todo.completed} onClick={handleCheckboxClick} />
+				</Tooltip>
 				<IconButton aria-label="edit" size="large" onClick={handleIsEditChange}>
-					{isEdit ? <Done /> : <Edit />}
+					{isEdit ? (
+						<Tooltip title={'Save changes'}>
+							<Done />
+						</Tooltip>
+					) : (
+						<Tooltip title={'Edit'}>
+							<Edit />
+						</Tooltip>
+					)}
 				</IconButton>
 				<IconButton aria-label="delete" size="large" onClick={handleDeleteTask}>
-					<Delete />
+					<Tooltip title={'Delete'}>
+						<Delete />
+					</Tooltip>
 				</IconButton>
-				<Typography sx={{ color: 'text.secondary', fontSize: 12 }}>
-					{dateConverter(todo.createdAt)}
-				</Typography>
+				<Tooltip title={`Updated: ${dateConverter(todo.updatedAt)}`}>
+					<Typography sx={{ color: 'text.secondary', fontSize: 12 }}>
+						{dateConverter(todo.createdAt)}
+					</Typography>
+				</Tooltip>
 			</CardActions>
 		</Card>
 	);
