@@ -124,15 +124,9 @@ export const Todo = ({ todo, setTodo }: TodoProps) => {
 					<Checkbox checked={todo.completed} onClick={handleCheckboxClick} />
 				</Tooltip>
 				<IconButton aria-label="edit" size="large" onClick={handleIsEditChange}>
-					{isEdit ? (
-						<Tooltip title={'Save changes'}>
-							<Done />
-						</Tooltip>
-					) : (
-						<Tooltip title={'Edit'}>
-							<Edit />
-						</Tooltip>
-					)}
+					<Tooltip title={isEdit ? 'Save changes' : 'Edit'}>
+						{isEdit ? <Done /> : <Edit />}
+					</Tooltip>
 				</IconButton>
 				<IconButton aria-label="delete" size="large" onClick={handleDeleteTask}>
 					<Tooltip title={'Delete'}>
