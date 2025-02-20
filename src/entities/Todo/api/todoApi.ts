@@ -8,3 +8,9 @@ export const getTodos = async () => {
 export const addTodo = async (todo: CreateTodoType) => {
 	return await rootApi.post<TodoType>('/todos', todo);
 };
+
+export const deleteTodo = async (todo: string) => {
+	return await rootApi.delete<TodoType>(`/todos/${todo}`, {
+		data: todo,
+	});
+};

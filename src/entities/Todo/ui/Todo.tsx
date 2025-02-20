@@ -10,11 +10,13 @@ import {
 	Tooltip,
 	Typography,
 } from '@mui/material';
-import { Delete, Edit, Done } from '@mui/icons-material';
-import { deleteTodo } from '../model/store/todosStore.ts';
+import { Delete, Done, Edit } from '@mui/icons-material';
+import { setTodos } from '../model/store/todosStore.ts';
 import { dateConverter } from '../../../shared/utils/DateConverter.ts';
+import { ChangeEvent, useCallback, useState } from 'react';
+import { enqueueSnackbar } from 'notistack';
+import { deleteTodo, getTodos } from '../api/todoApi.ts';
 import { useAppDispatch } from '../../../app/store.ts';
-import { ChangeEvent, useState } from 'react';
 
 type TodoProps = {
 	todo: TodoType;
@@ -46,12 +48,29 @@ export const Todo = ({ todo, setTodo }: TodoProps) => {
 		setIsEdit(!isEdit);
 	};
 
+	const handleGetTodos = useCallback(async () => {
+		getTodos()
+			.then((todos) => {
+				dispatch(setTodos(todos.data || []));
+			})
+			.catch(() => {
+				enqueueSnackbar('Error fetching todos', { variant: 'error' });
+				dispatch(setTodos([]));
+			});
+	}, [dispatch, enqueueSnackbar]);
+
 	const handleCheckboxClick = () => {
 		setTodo?.({ ...todo, completed: !todo.completed });
 	};
 
-	const handleDeleteTask = () => {
-		dispatch(deleteTodo(todo._id));
+	const handleDeleteTask = async () => {
+		try {
+			await deleteTodo(todo._id);
+			await handleGetTodos();
+		} catch (error) {
+			console.error(error);
+			enqueueSnackbar('Error deleting todo', { variant: 'error' });
+		}
 	};
 
 	return (
