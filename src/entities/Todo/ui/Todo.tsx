@@ -15,7 +15,7 @@ import { setTodos } from '../model/store/todosStore.ts';
 import { dateConverter } from '../../../shared/utils/DateConverter.ts';
 import { ChangeEvent, useCallback, useState } from 'react';
 import { enqueueSnackbar } from 'notistack';
-import { deleteTodo, getTodos } from '../api/todoApi.ts';
+import { deleteTodo, getTodos, updateTodo } from '../api/todoApi.ts';
 import { useAppDispatch } from '../../../app/store.ts';
 
 type TodoProps = {
@@ -38,13 +38,12 @@ export const Todo = ({ todo, setTodo }: TodoProps) => {
 		setNewDescription(e.target.value);
 	};
 
-	const handleIsEditChange = () => {
-		setTodo?.({
-			...todo,
+	const handleIsEditChange = async () => {
+		await updateTodo(todo._id, {
 			title: newTitle,
 			description: newDescription,
-			updatedAt: new Date().toLocaleString(),
 		});
+		await handleGetTodos();
 		setIsEdit(!isEdit);
 	};
 
@@ -57,7 +56,7 @@ export const Todo = ({ todo, setTodo }: TodoProps) => {
 				enqueueSnackbar('Error fetching todos', { variant: 'error' });
 				dispatch(setTodos([]));
 			});
-	}, [dispatch, enqueueSnackbar]);
+	}, [dispatch]);
 
 	const handleCheckboxClick = () => {
 		setTodo?.({ ...todo, completed: !todo.completed });
