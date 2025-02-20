@@ -18,23 +18,22 @@ import { useAppDispatch, useAppSelector } from '../../../app/store.ts';
 import {
 	selectIsLoading,
 	setIsLoading,
+	setUser,
 } from '../../User/model/store/userStore.ts';
 import { rootApi } from '../../../shared/api/rootApi.ts';
 import { UserType } from '../../User/model/userType.ts';
 import { AxiosError } from 'axios';
-import { useNavigate } from 'react-router';
 
 const Register = () => {
-	const navigate = useNavigate();
-
 	const loading = useAppSelector(selectIsLoading);
 
 	const dispatch = useAppDispatch();
 
+	const { enqueueSnackbar } = useSnackbar();
+
 	const [email, setEmail] = useState('');
 	const [password, setPassword] = useState('');
 	const [showPassword, setShowPassword] = useState(false);
-	const { enqueueSnackbar } = useSnackbar();
 
 	const handleClearFields = () => {
 		setEmail('');
@@ -60,9 +59,16 @@ const Register = () => {
 				username: email,
 				password: password,
 			});
+			const loginData = await rootApi.post<UserType>('/auth/login', {
+				username: email,
+				password: password,
+			});
+
+			const accessToken = loginData.data.access_token;
+			localStorage.setItem('access_token', accessToken);
+			dispatch(setUser(loginData.data));
 			enqueueSnackbar('Successfully registered!', { variant: 'success' });
 			handleClearFields();
-			navigate('/auth/login');
 		} catch (error) {
 			const axiosError = error as AxiosError<{ message: string }>;
 			enqueueSnackbar(axiosError.response?.data.message || 'Unknown Error', {
