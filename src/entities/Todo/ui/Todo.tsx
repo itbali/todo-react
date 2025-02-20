@@ -68,27 +68,31 @@ export const Todo = ({ todo, setTodo }: TodoProps) => {
 		>
 			<CardContent>
 				{isEdit ? (
-					<Stack>
+					<Stack width={'300px'}>
 						<Input
 							placeholder={'enter title'}
 							onChange={handleTitleChange}
 							value={newTitle}
+							sx={{ fontSize: 14, width: '100%' }}
 						/>
 						<Input
 							placeholder={'enter description'}
 							onChange={handleDescriptionChange}
 							value={newDescription}
+							sx={{ fontSize: 14, width: '100%' }}
 						/>
 					</Stack>
 				) : (
-					<Stack>
+					<Stack width={'300px'}>
 						<Typography
 							gutterBottom
-							sx={{ color: 'text.secondary', fontSize: 14 }}
+							sx={{ color: 'text.secondary', fontSize: 14, width: '100%' }}
 						>
 							{todo.title}
 						</Typography>
-						<Typography variant="body2">{todo.description}</Typography>
+						<Typography variant="body2" sx={{ width: '100%' }}>
+							{todo.description}
+						</Typography>
 					</Stack>
 				)}
 			</CardContent>
