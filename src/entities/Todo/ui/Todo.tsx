@@ -41,6 +41,7 @@ export const Todo = ({ todo, setTodo }: TodoProps) => {
 			...todo,
 			title: newTitle,
 			description: newDescription,
+			updatedAt: new Date().toLocaleString(),
 		});
 		setIsEdit(!isEdit);
 	};
