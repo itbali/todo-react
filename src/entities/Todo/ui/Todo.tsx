@@ -71,6 +71,36 @@ export const Todo = ({ todo, setTodo }: TodoProps) => {
 			enqueueSnackbar('Error deleting todo', { variant: 'error' });
 		}
 	};
+	const editModeContent = (
+		<Stack width={'300px'}>
+			<Input
+				placeholder={'enter title'}
+				onChange={handleTitleChange}
+				value={newTitle}
+				sx={{ fontSize: 14, width: '100%' }}
+			/>
+			<Input
+				placeholder={'enter description'}
+				onChange={handleDescriptionChange}
+				value={newDescription}
+				sx={{ fontSize: 14, width: '100%' }}
+			/>
+		</Stack>
+	);
+
+	const viewModeContent = (
+		<Stack width={'300px'}>
+			<Typography
+				gutterBottom
+				sx={{ color: 'text.secondary', fontSize: 14, width: '100%' }}
+			>
+				{todo.title}
+			</Typography>
+			<Typography variant="body2" sx={{ width: '100%' }}>
+				{todo.description}
+			</Typography>
+		</Stack>
+	);
 
 	return (
 		<Card
@@ -85,34 +115,9 @@ export const Todo = ({ todo, setTodo }: TodoProps) => {
 			})}
 		>
 			<CardContent>
-				{isEdit ? (
-					<Stack width={'300px'}>
-						<Input
-							placeholder={'enter title'}
-							onChange={handleTitleChange}
-							value={newTitle}
-							sx={{ fontSize: 14, width: '100%' }}
-						/>
-						<Input
-							placeholder={'enter description'}
-							onChange={handleDescriptionChange}
-							value={newDescription}
-							sx={{ fontSize: 14, width: '100%' }}
-						/>
-					</Stack>
-				) : (
-					<Stack width={'300px'}>
-						<Typography
-							gutterBottom
-							sx={{ color: 'text.secondary', fontSize: 14, width: '100%' }}
-						>
-							{todo.title}
-						</Typography>
-						<Typography variant="body2" sx={{ width: '100%' }}>
-							{todo.description}
-						</Typography>
-					</Stack>
-				)}
+				<Stack width={'300px'}>
+					{isEdit ? editModeContent : viewModeContent}
+				</Stack>
 			</CardContent>
 			<CardActions>
 				<Tooltip title={'Complete'}>
