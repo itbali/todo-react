@@ -1,9 +1,19 @@
-import { Button, Container, Input, Stack } from '@mui/material';
+import {
+	Accordion,
+	AccordionDetails,
+	AccordionSummary,
+	Button,
+	Container,
+	Input,
+	Stack,
+	Tooltip,
+} from '@mui/material';
 import { addTodo, selectTodos, setTodos } from '../model/store/todosStore.ts';
 import { Todo } from './Todo.tsx';
 import { ChangeEvent, useState } from 'react';
 import { TodoType } from '../model/todoType.ts';
 import { useAppDispatch, useAppSelector } from '../../../app/store.ts';
+import AddIcon from '@mui/icons-material/Add';
 
 const Todos = () => {
 	const todos = useAppSelector(selectTodos);
@@ -50,25 +60,44 @@ const Todos = () => {
 	return (
 		<Container>
 			<Stack direction="row" sx={{ marginBottom: '20px' }}>
-				<Input
-					placeholder={'enter title'}
-					onChange={handleTitleChange}
-					value={newTodoTitle}
-				/>
-				<Input
-					placeholder={'enter description'}
-					onChange={handleDescriptionChange}
-					value={newTodoDescription}
-					sx={{ marginLeft: '10px' }}
-				/>
-				<Button
-					variant={'text'}
-					disabled={!newTodoTitle}
-					onClick={handleAddTodo}
-					sx={{ marginLeft: '10px' }}
+				<Accordion
+					sx={{
+						'&.MuiAccordion-root': {
+							width: '50px',
+							borderRadius: '20px',
+						},
+						'&.Mui-expanded': {
+							width: '1000px',
+						},
+					}}
 				>
-					Add Todo
-				</Button>
+					<AccordionSummary>
+						<Tooltip title={'Add new todo'}>
+							<AddIcon />
+						</Tooltip>
+					</AccordionSummary>
+					<AccordionDetails>
+						<Input
+							placeholder={'enter title'}
+							onChange={handleTitleChange}
+							value={newTodoTitle}
+						/>
+						<Input
+							placeholder={'enter description'}
+							onChange={handleDescriptionChange}
+							value={newTodoDescription}
+							sx={{ marginLeft: '10px' }}
+						/>
+						<Button
+							variant={'text'}
+							disabled={!newTodoTitle}
+							onClick={handleAddTodo}
+							sx={{ marginLeft: '10px' }}
+						>
+							Add Todo
+						</Button>
+					</AccordionDetails>
+				</Accordion>
 			</Stack>
 			<Stack spacing={2} direction="row" flexWrap="wrap" useFlexGap>
 				{todos.map((todo) => {

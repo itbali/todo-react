@@ -1,32 +1,52 @@
-import React, { useEffect, useState } from 'react';
-import { Container, ToggleButton, ToggleButtonGroup } from '@mui/material';
-import { selectIsLoading } from '../model/store/userStore.ts';
+import React, { useState } from 'react';
+import {
+	Button,
+	Container,
+	ToggleButton,
+	ToggleButtonGroup,
+} from '@mui/material';
+import { selectIsLoading, selectUser } from '../model/store/userStore.ts';
 import { useAppSelector } from '../../../app/store.ts';
-import { Route, Routes, useNavigate } from 'react-router';
+import {
+	Navigate,
+	Route,
+	Routes,
+	useLocation,
+	useNavigate,
+} from 'react-router';
 import Login from '../../App/ui/Login.tsx';
 import Register from '../../App/ui/Register.tsx';
 
 const Auth = () => {
 	const [loginFormName, setLoginFormName] = useState('login');
+	const [error, setError] = useState(false);
 
 	const loading = useAppSelector(selectIsLoading);
+	const user = useAppSelector(selectUser);
 
 	const navigate = useNavigate();
+	const location = useLocation();
 
 	const handleChange = (
 		_event: React.MouseEvent<HTMLElement>,
-		newAlignment: string,
+		newAlignment: string | null,
 	) => {
-		setLoginFormName(newAlignment);
+		if (newAlignment != null) {
+			setLoginFormName(newAlignment);
+			navigate(`/auth/${newAlignment}`);
+		}
 	};
 
-	useEffect(() => {
-		if (loginFormName === 'login') {
-			navigate('/auth/login');
-		} else {
-			navigate('/auth/register');
-		}
-	}, [loginFormName]);
+	if (user) {
+		const searchParams = new URLSearchParams(location.search);
+		const back = searchParams.get('back');
+
+		return <Navigate to={back || '/'} />;
+	}
+
+	if (error) {
+		throw new Error('Error');
+	}
 
 	return (
 		<Container maxWidth={'sm'}>
@@ -47,6 +67,14 @@ const Auth = () => {
 					Register
 				</ToggleButton>
 			</ToggleButtonGroup>
+			<Button
+				variant={'contained'}
+				color={'error'}
+				fullWidth
+				onClick={() => setError(true)}
+			>
+				Error
+			</Button>
 			<Routes>
 				<Route path={'/login'} element={<Login />} />
 				<Route path={'/register'} element={<Register />} />
