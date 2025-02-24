@@ -3,21 +3,31 @@ import {
 	AccordionDetails,
 	AccordionSummary,
 	Button,
+	CircularProgress,
 	Container,
 	Input,
 	Stack,
 	Tooltip,
 } from '@mui/material';
-import { addTodo, selectTodos, setTodos } from '../model/store/todosStore.ts';
+import { selectTodos, setTodos } from '../model/store/todosStore.ts';
 import { Todo } from './Todo.tsx';
-import { ChangeEvent, useState } from 'react';
-import { TodoType } from '../model/todoType.ts';
+import { ChangeEvent, useCallback, useEffect, useState } from 'react';
+import { CreateTodoType, TodoType } from '../model/todoType.ts';
 import { useAppDispatch, useAppSelector } from '../../../app/store.ts';
 import AddIcon from '@mui/icons-material/Add';
+import { addTodo, getTodos } from '../api/todoApi.ts';
+import { useSnackbar } from 'notistack';
+import { selectUser } from '../../User/model/store/userStore.ts';
 
 const Todos = () => {
 	const todos = useAppSelector(selectTodos);
+	const user = useAppSelector(selectUser);
+
 	const dispatch = useAppDispatch();
+
+	const { enqueueSnackbar } = useSnackbar();
+
+	const [isLoading, setIsLoading] = useState(true);
 	const [newTodoTitle, setNewTodoTitle] = useState<string>('');
 	const [newTodoDescription, setNewTodoDescription] = useState<string>('');
 
@@ -30,6 +40,20 @@ const Todos = () => {
 		});
 		dispatch(setTodos(updatedTodos));
 	};
+
+	const handleGetTodos = useCallback(async () => {
+		getTodos()
+			.then((todos) => {
+				dispatch(setTodos(todos.data || []));
+			})
+			.catch(() => {
+				enqueueSnackbar('Error fetching todos', { variant: 'error' });
+				dispatch(setTodos([]));
+			})
+			.finally(() => {
+				setIsLoading(false);
+			});
+	}, [dispatch, enqueueSnackbar]);
 
 	const handleTitleChange = (e: ChangeEvent<HTMLInputElement>) => {
 		setNewTodoTitle(e.target.value);
@@ -44,19 +68,34 @@ const Todos = () => {
 		setNewTodoDescription('');
 	};
 
-	const handleAddTodo = () => {
-		const newTodo: TodoType = {
-			_id: Date.now().toString(),
-			title: newTodoTitle,
-			description: newTodoDescription,
-			completed: false,
-			createdAt: new Date().toISOString(),
-			updatedAt: new Date().toISOString(),
-			order: todos.length + 1,
-		};
-		dispatch(addTodo(newTodo));
-		handleClearFields();
+	const handleAddTodo = async () => {
+		try {
+			setIsLoading(true);
+			if (!user?.access_token) return;
+
+			const newTodo: CreateTodoType = {
+				title: newTodoTitle,
+				description: newTodoDescription,
+			};
+			await addTodo(newTodo);
+			handleClearFields();
+			await handleGetTodos();
+		} catch (error) {
+			console.error(error);
+			enqueueSnackbar('Error adding todo', { variant: 'error' });
+		} finally {
+			setIsLoading(false);
+		}
 	};
+
+	useEffect(() => {
+		handleGetTodos();
+	}, [handleGetTodos]);
+
+	if (isLoading) {
+		return <CircularProgress />;
+	}
+
 	return (
 		<Container>
 			<Stack direction="row" sx={{ marginBottom: '20px' }}>

@@ -10,11 +10,13 @@ import {
 	Tooltip,
 	Typography,
 } from '@mui/material';
-import { Delete, Edit, Done } from '@mui/icons-material';
-import { deleteTodo } from '../model/store/todosStore.ts';
+import { Delete, Done, Edit } from '@mui/icons-material';
+import { setTodos } from '../model/store/todosStore.ts';
 import { dateConverter } from '../../../shared/utils/DateConverter.ts';
+import { ChangeEvent, useCallback, useState } from 'react';
+import { enqueueSnackbar } from 'notistack';
+import { deleteTodo, getTodos, updateTodo } from '../api/todoApi.ts';
 import { useAppDispatch } from '../../../app/store.ts';
-import { ChangeEvent, useState } from 'react';
 
 type TodoProps = {
 	todo: TodoType;
@@ -36,23 +38,69 @@ export const Todo = ({ todo, setTodo }: TodoProps) => {
 		setNewDescription(e.target.value);
 	};
 
-	const handleIsEditChange = () => {
-		setTodo?.({
-			...todo,
+	const handleIsEditChange = async () => {
+		await updateTodo(todo._id, {
 			title: newTitle,
 			description: newDescription,
-			updatedAt: new Date().toLocaleString(),
 		});
+		await handleGetTodos();
 		setIsEdit(!isEdit);
 	};
+
+	const handleGetTodos = useCallback(async () => {
+		getTodos()
+			.then((todos) => {
+				dispatch(setTodos(todos.data || []));
+			})
+			.catch(() => {
+				enqueueSnackbar('Error fetching todos', { variant: 'error' });
+				dispatch(setTodos([]));
+			});
+	}, [dispatch]);
 
 	const handleCheckboxClick = () => {
 		setTodo?.({ ...todo, completed: !todo.completed });
 	};
 
-	const handleDeleteTask = () => {
-		dispatch(deleteTodo(todo._id));
+	const handleDeleteTask = async () => {
+		try {
+			await deleteTodo(todo._id);
+			await handleGetTodos();
+		} catch (error) {
+			console.error(error);
+			enqueueSnackbar('Error deleting todo', { variant: 'error' });
+		}
 	};
+	const editModeContent = (
+		<>
+			<Input
+				placeholder={'enter title'}
+				onChange={handleTitleChange}
+				value={newTitle}
+				sx={{ fontSize: 14, width: '100%' }}
+			/>
+			<Input
+				placeholder={'enter description'}
+				onChange={handleDescriptionChange}
+				value={newDescription}
+				sx={{ fontSize: 14, width: '100%' }}
+			/>
+		</>
+	);
+
+	const viewModeContent = (
+		<>
+			<Typography
+				gutterBottom
+				sx={{ color: 'text.secondary', fontSize: 14, width: '100%' }}
+			>
+				{todo.title}
+			</Typography>
+			<Typography variant="body2" sx={{ width: '100%' }}>
+				{todo.description}
+			</Typography>
+		</>
+	);
 
 	return (
 		<Card
@@ -67,49 +115,18 @@ export const Todo = ({ todo, setTodo }: TodoProps) => {
 			})}
 		>
 			<CardContent>
-				{isEdit ? (
-					<Stack width={'300px'}>
-						<Input
-							placeholder={'enter title'}
-							onChange={handleTitleChange}
-							value={newTitle}
-							sx={{ fontSize: 14, width: '100%' }}
-						/>
-						<Input
-							placeholder={'enter description'}
-							onChange={handleDescriptionChange}
-							value={newDescription}
-							sx={{ fontSize: 14, width: '100%' }}
-						/>
-					</Stack>
-				) : (
-					<Stack width={'300px'}>
-						<Typography
-							gutterBottom
-							sx={{ color: 'text.secondary', fontSize: 14, width: '100%' }}
-						>
-							{todo.title}
-						</Typography>
-						<Typography variant="body2" sx={{ width: '100%' }}>
-							{todo.description}
-						</Typography>
-					</Stack>
-				)}
+				<Stack width={'300px'}>
+					{isEdit ? editModeContent : viewModeContent}
+				</Stack>
 			</CardContent>
 			<CardActions>
 				<Tooltip title={'Complete'}>
 					<Checkbox checked={todo.completed} onClick={handleCheckboxClick} />
 				</Tooltip>
 				<IconButton aria-label="edit" size="large" onClick={handleIsEditChange}>
-					{isEdit ? (
-						<Tooltip title={'Save changes'}>
-							<Done />
-						</Tooltip>
-					) : (
-						<Tooltip title={'Edit'}>
-							<Edit />
-						</Tooltip>
-					)}
+					<Tooltip title={isEdit ? 'Save changes' : 'Edit'}>
+						{isEdit ? <Done /> : <Edit />}
+					</Tooltip>
 				</IconButton>
 				<IconButton aria-label="delete" size="large" onClick={handleDeleteTask}>
 					<Tooltip title={'Delete'}>
