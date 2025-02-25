@@ -17,23 +17,23 @@ export const formatDistanceToNow = (date: string) => {
 
 	if (seconds <= 30) {
 		return `less than a minute`;
-	} else if (minutes <= 2) {
+	} else if (minutes < 2) {
 		return `1 minute`;
 	} else if (minutes <= 45) {
 		return `${minutes} minutes ago`;
-	} else if (hours <= 2) {
+	} else if (hours < 2) {
 		return 'about 1 hour';
 	} else if (hours <= 24) {
 		return `about ${hours} hours`;
-	} else if (hours <= 42) {
+	} else if (hours < 42) {
 		return '1 day';
 	} else if (days <= 30) {
 		return `${days} days`;
-	} else if (days <= 45) {
+	} else if (days < 45) {
 		return 'about 1 month';
-	} else if (days <= 60) {
+	} else if (days < 60) {
 		return 'about 2 months';
-	} else if (days <= 365) {
+	} else if (days < 365) {
 		return `${months} months`;
 	} else if (months <= 15) {
 		return 'about 1 year';
