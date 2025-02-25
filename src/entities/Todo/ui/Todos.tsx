@@ -31,15 +31,18 @@ const Todos = () => {
 	const [newTodoTitle, setNewTodoTitle] = useState<string>('');
 	const [newTodoDescription, setNewTodoDescription] = useState<string>('');
 
-	const setTodo = (todo: TodoType) => {
-		const updatedTodos = todos.map((t) => {
-			if (t._id === todo._id) {
-				return todo;
-			}
-			return t;
-		});
-		dispatch(setTodos(updatedTodos));
-	};
+	const setTodo = useCallback(
+		(todo: TodoType) => {
+			const updatedTodos = todos.map((t) => {
+				if (t._id === todo._id) {
+					return todo;
+				}
+				return t;
+			});
+			dispatch(setTodos(updatedTodos));
+		},
+		[dispatch, todos],
+	);
 
 	const handleGetTodos = useCallback(async () => {
 		getTodos()

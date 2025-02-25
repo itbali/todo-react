@@ -13,7 +13,7 @@ import {
 import { Delete, Done, Edit } from '@mui/icons-material';
 import { setTodos } from '../model/store/todosStore.ts';
 import { dateConverter } from '../../../shared/utils/DateConverter.ts';
-import { ChangeEvent, useCallback, useState } from 'react';
+import { ChangeEvent, memo, useCallback, useState } from 'react';
 import { enqueueSnackbar } from 'notistack';
 import { deleteTodo, getTodos, updateTodo } from '../api/todoApi.ts';
 import { useAppDispatch } from '../../../app/store.ts';
@@ -23,7 +23,7 @@ type TodoProps = {
 	setTodo?: (todo: TodoType) => void;
 };
 
-export const Todo = ({ todo, setTodo }: TodoProps) => {
+export const Todo = memo(({ todo, setTodo }: TodoProps) => {
 	const dispatch = useAppDispatch();
 
 	const [isEdit, setIsEdit] = useState(false);
@@ -141,4 +141,4 @@ export const Todo = ({ todo, setTodo }: TodoProps) => {
 			</CardActions>
 		</Card>
 	);
-};
+});
