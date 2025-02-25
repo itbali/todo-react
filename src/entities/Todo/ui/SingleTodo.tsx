@@ -3,7 +3,7 @@ import { NavLink, To, useParams } from 'react-router';
 import { getTodoById } from '../api/todoApi.ts';
 import { TodoType } from '../model/todoType.ts';
 import { Stack, Typography } from '@mui/material';
-import { formatDistanceToNow } from 'date-fns';
+import { formatDistanceToNow } from '../../../shared/utils/DateConverter.ts';
 
 export const SingleTodo = () => {
 	const [todo, setTodo] = useState<TodoType>();
