@@ -11,12 +11,12 @@ import {
 	Typography,
 } from '@mui/material';
 import { Delete, Done, Edit } from '@mui/icons-material';
-import { setTodos } from '../model/store/todosStore.ts';
+import { selectFilters, setTodos } from '../model/store/todosStore.ts';
 import { dateConverter } from '../../../shared/utils/DateConverter.ts';
 import { ChangeEvent, memo, useCallback, useState } from 'react';
 import { enqueueSnackbar } from 'notistack';
 import { deleteTodo, getTodos, updateTodo } from '../api/todoApi.ts';
-import { useAppDispatch } from '../../../app/store.ts';
+import { useAppDispatch, useAppSelector } from '../../../app/store.ts';
 import { NavLink } from 'react-router';
 
 type TodoProps = {
@@ -26,6 +26,8 @@ type TodoProps = {
 
 export const Todo = memo(({ todo, setTodo }: TodoProps) => {
 	const dispatch = useAppDispatch();
+
+	const filters = useAppSelector(selectFilters);
 
 	const [isEdit, setIsEdit] = useState(false);
 	const [newTitle, setNewTitle] = useState(todo.title);
@@ -49,7 +51,7 @@ export const Todo = memo(({ todo, setTodo }: TodoProps) => {
 	};
 
 	const handleGetTodos = useCallback(async () => {
-		getTodos()
+		getTodos(filters)
 			.then((todos) => {
 				dispatch(setTodos(todos.data || []));
 			})

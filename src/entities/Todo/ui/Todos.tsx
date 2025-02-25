@@ -9,7 +9,11 @@ import {
 	Stack,
 	Tooltip,
 } from '@mui/material';
-import { selectTodos, setTodos } from '../model/store/todosStore.ts';
+import {
+	selectFilters,
+	selectTodos,
+	setTodos,
+} from '../model/store/todosStore.ts';
 import { Todo } from './Todo.tsx';
 import { ChangeEvent, useCallback, useEffect, useState } from 'react';
 import { CreateTodoType, TodoType } from '../model/todoType.ts';
@@ -22,6 +26,7 @@ import { selectUser } from '../../User/model/store/userStore.ts';
 const Todos = () => {
 	const todos = useAppSelector(selectTodos);
 	const user = useAppSelector(selectUser);
+	const filters = useAppSelector(selectFilters);
 
 	const dispatch = useAppDispatch();
 
@@ -45,7 +50,8 @@ const Todos = () => {
 	);
 
 	const handleGetTodos = useCallback(async () => {
-		getTodos()
+		setIsLoading(true);
+		getTodos(filters)
 			.then((todos) => {
 				dispatch(setTodos(todos.data || []));
 			})
@@ -56,7 +62,7 @@ const Todos = () => {
 			.finally(() => {
 				setIsLoading(false);
 			});
-	}, [dispatch, enqueueSnackbar]);
+	}, [dispatch, enqueueSnackbar, filters]);
 
 	const handleTitleChange = (e: ChangeEvent<HTMLInputElement>) => {
 		setNewTodoTitle(e.target.value);
