@@ -13,13 +13,14 @@ import {
 	AccordionSummary,
 	Button,
 	ButtonGroup,
+	debounce,
 	Input,
 	MenuItem,
 	Select,
 	SelectChangeEvent,
 	Typography,
 } from '@mui/material';
-import React from 'react';
+import React, { useCallback, useState } from 'react';
 
 const TodosFilters = () => {
 	const filters = useAppSelector(selectFilters);
@@ -27,12 +28,22 @@ const TodosFilters = () => {
 
 	const dispatch = useAppDispatch();
 
+	const [searchInput, setSearchInput] = useState(filters.search || '');
+
 	const handleFilterChange = (filter: 'true' | 'false' | 'all') => {
 		dispatch(setCompletedFilter(filter));
 	};
 
+	const debouncedSearch = useCallback(
+		debounce((value) => {
+			dispatch(setSearch(value));
+		}, 1000),
+		[dispatch],
+	);
+
 	const handleChangeSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
-		dispatch(setSearch(e.target.value));
+		setSearchInput(e.target.value);
+		debouncedSearch(e.target.value);
 	};
 
 	const handleChangeLimit = (e: SelectChangeEvent<number>) => {
@@ -56,7 +67,7 @@ const TodosFilters = () => {
 			<Accordion>
 				<AccordionSummary>Filters</AccordionSummary>
 				<AccordionDetails>
-					<Input onChange={handleChangeSearch} value={filters.search || ''} />
+					<Input onChange={handleChangeSearch} value={searchInput} />
 					<br />
 					<ButtonGroup>
 						<Button
