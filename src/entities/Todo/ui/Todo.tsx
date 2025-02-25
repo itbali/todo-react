@@ -17,6 +17,7 @@ import { ChangeEvent, memo, useCallback, useState } from 'react';
 import { enqueueSnackbar } from 'notistack';
 import { deleteTodo, getTodos, updateTodo } from '../api/todoApi.ts';
 import { useAppDispatch } from '../../../app/store.ts';
+import { NavLink } from 'react-router';
 
 type TodoProps = {
 	todo: TodoType;
@@ -71,6 +72,7 @@ export const Todo = memo(({ todo, setTodo }: TodoProps) => {
 			enqueueSnackbar('Error deleting todo', { variant: 'error' });
 		}
 	};
+
 	const editModeContent = (
 		<>
 			<Input
@@ -94,7 +96,7 @@ export const Todo = memo(({ todo, setTodo }: TodoProps) => {
 				gutterBottom
 				sx={{ color: 'text.secondary', fontSize: 14, width: '100%' }}
 			>
-				{todo.title}
+				<NavLink to={`/todo/${todo._id}`}>{todo.title}</NavLink>
 			</Typography>
 			<Typography variant="body2" sx={{ width: '100%' }}>
 				{todo.description}

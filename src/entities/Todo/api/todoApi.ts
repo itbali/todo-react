@@ -26,3 +26,7 @@ export const updateTodo = async (
 ) => {
 	return await rootApi.patch<TodoType>(`/todos/${todoId}`, updateData);
 };
+
+export const getTodoById = async (todoId: string) => {
+	return await rootApi.get<TodoType>(`/todos/${todoId}`);
+};
