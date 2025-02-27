@@ -1,5 +1,6 @@
 import {
 	Button,
+	CircularProgress,
 	FilledInput,
 	IconButton,
 	InputAdornment,
@@ -12,17 +13,11 @@ import {
 	Visibility,
 	VisibilityOff,
 } from '@mui/icons-material';
-import { SyntheticEvent, useState } from 'react';
+import { SyntheticEvent, useEffect, useState } from 'react';
 import { useSnackbar } from 'notistack';
 import { useAppDispatch, useAppSelector } from '../../../app/store.ts';
-import {
-	selectIsLoading,
-	setIsLoading,
-	setUser,
-} from '../../User/model/store/userStore.ts';
-import { rootApi } from '../../../shared/api/rootApi.ts';
-import { UserType } from '../../User/model/userType.ts';
-import { AxiosError } from 'axios';
+import { selectIsLoading, setUser } from '../../User/model/store/userStore.ts';
+import { useRegisterUserMutation } from '../../User/api/userApi.ts';
 
 const Register = () => {
 	const loading = useAppSelector(selectIsLoading);
@@ -52,34 +47,34 @@ const Register = () => {
 		setPassword(e.currentTarget.value);
 	};
 
-	const handleRegister = async () => {
-		dispatch(setIsLoading(true));
-		try {
-			await rootApi.post<UserType>('/auth/register', {
-				username: email,
-				password: password,
-			});
-			const loginData = await rootApi.post<UserType>('/auth/login', {
-				username: email,
-				password: password,
-			});
+	const handleClickShowPassword = () => setShowPassword(!showPassword);
 
-			const accessToken = loginData.data.access_token;
-			localStorage.setItem('access_token', accessToken);
-			dispatch(setUser(loginData.data));
-			enqueueSnackbar('Successfully registered!', { variant: 'success' });
-			handleClearFields();
-		} catch (error) {
-			const axiosError = error as AxiosError<{ message: string }>;
-			enqueueSnackbar(axiosError.response?.data.message || 'Unknown Error', {
-				variant: 'error',
-			});
-		} finally {
-			dispatch(setIsLoading(false));
-		}
+	const [userRegister, { data, isLoading, isSuccess, error, isError }] =
+		useRegisterUserMutation();
+
+	const handleRegister = () => {
+		userRegister({ username: email, password });
 	};
 
-	const handleClickShowPassword = () => setShowPassword(!showPassword);
+	useEffect(() => {
+		if (isSuccess && data) {
+			const accessToken = data.access_token;
+			localStorage.setItem('access_token', accessToken);
+			dispatch(setUser(data));
+			enqueueSnackbar('Successfully registered!', { variant: 'success' });
+			handleClearFields();
+		}
+	}, [isSuccess, data]);
+
+	useEffect(() => {
+		if (isError) {
+			enqueueSnackbar(`${error.data.message}`, { variant: 'error' });
+		}
+	}, [enqueueSnackbar, error, isError]);
+
+	if (isLoading) {
+		return <CircularProgress />;
+	}
 
 	return (
 		<Stack spacing={2}>
