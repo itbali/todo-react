@@ -1,19 +1,53 @@
 import { ChangeEvent, useEffect, useState } from 'react';
 import { NavLink, To, useParams } from 'react-router';
-import { getTodoById, updateTodo } from '../api/todoApi.ts';
-import { TodoType } from '../model/todoType.ts';
-import { IconButton, Input, Stack, Tooltip, Typography } from '@mui/material';
+import { useGetTodoByIdQuery, useUpdateTodoMutation } from '../api/todoApi.ts';
+import {
+	CircularProgress,
+	IconButton,
+	Input,
+	Stack,
+	Tooltip,
+	Typography,
+} from '@mui/material';
 import { formatDistanceToNow } from '../../../shared/utils/DateConverter.ts';
 import { Done, Edit } from '@mui/icons-material';
+import { enqueueSnackbar } from 'notistack';
 
 export const SingleTodo = () => {
 	const params = useParams<{ _id: string }>();
 
-	const [todo, setTodo] = useState<TodoType>();
-
 	const [isEdit, setIsEdit] = useState(false);
 	const [newTitle, setNewTitle] = useState('');
 	const [newDescription, setNewDescription] = useState('');
+
+	const {
+		data: todo,
+		isLoading: isGettingIdLoading,
+		isError: isGettingIdError,
+	} = useGetTodoByIdQuery(params._id || '', { skip: !params._id });
+
+	const [
+		updateTodo,
+		{ isError: isUpdatingError, isLoading: isUpdatingLoading },
+	] = useUpdateTodoMutation();
+
+	useEffect(() => {
+		if (todo) {
+			setNewTitle(todo.title);
+			setNewDescription(todo.description);
+		}
+	}, [todo]);
+
+	const handleIsEditChange = async () => {
+		if (!params._id) return;
+		if (isEdit) {
+			updateTodo({
+				todoId: params._id,
+				updateData: { title: newTitle, description: newDescription },
+			});
+		}
+		setIsEdit(!isEdit);
+	};
 
 	const handleTitleChange = (e: ChangeEvent<HTMLInputElement>) => {
 		setNewTitle(e.target.value);
@@ -23,29 +57,18 @@ export const SingleTodo = () => {
 		setNewDescription(e.target.value);
 	};
 
-	const handleIsEditChange = async () => {
-		if (!params._id) return;
-
-		await updateTodo(params._id, {
-			title: newTitle,
-			description: newDescription,
-		});
-		await getTodoById(params._id).then((res) => {
-			setTodo(res.data);
-		});
-
-		setIsEdit(!isEdit);
-	};
-
-	useEffect(() => {
-		if (!params._id) return;
-
-		getTodoById(params._id).then((res) => {
-			setTodo(res.data);
-		});
-	}, [params._id]);
+	const isError = isGettingIdError || isUpdatingError;
+	const isLoading = isGettingIdLoading || isUpdatingLoading;
 
 	if (!todo) return <h1>Loading...</h1>;
+
+	if (isError) {
+		enqueueSnackbar('Error updating todo', { variant: 'error' });
+	}
+
+	if (isLoading) {
+		return <CircularProgress />;
+	}
 
 	const editModeContent = (
 		<>

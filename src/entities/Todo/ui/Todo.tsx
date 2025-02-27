@@ -15,22 +15,51 @@ import { Delete, Done, Edit } from '@mui/icons-material';
 import { dateConverter } from '../../../shared/utils/DateConverter.ts';
 import { ChangeEvent, memo, useEffect, useState } from 'react';
 import { enqueueSnackbar } from 'notistack';
-import { updateTodo, useDeleteTodoMutation } from '../api/todoApi.ts';
+import {
+	useDeleteTodoMutation,
+	useUpdateTodoMutation,
+} from '../api/todoApi.ts';
 import { NavLink } from 'react-router';
 
 type TodoProps = {
 	todo: TodoType;
-	setTodo?: (todo: TodoType) => void;
 };
 
-export const Todo = memo(({ todo, setTodo }: TodoProps) => {
-	// const dispatch = useAppDispatch();
-	//
-	// const filters = useAppSelector(selectFilters);
-
+export const Todo = memo(({ todo }: TodoProps) => {
 	const [isEdit, setIsEdit] = useState(false);
 	const [newTitle, setNewTitle] = useState(todo.title);
 	const [newDescription, setNewDescription] = useState(todo.description);
+
+	const [
+		updateTodo,
+		{ isError: isUpdatingError, isLoading: isUpdatingLoading },
+	] = useUpdateTodoMutation();
+
+	const [
+		deleteTodoToBackend,
+		{ isError: isDeletingError, isLoading: isDeletingLoading },
+	] = useDeleteTodoMutation();
+
+	const handleIsEditChange = () => {
+		if (isEdit) {
+			updateTodo({
+				todoId: todo._id,
+				updateData: { title: newTitle, description: newDescription },
+			});
+			setIsEdit(!isEdit);
+		}
+	};
+
+	const handleCheckboxClick = () => {
+		updateTodo({
+			todoId: todo._id,
+			updateData: { completed: !todo.completed },
+		});
+	};
+
+	const handleDeleteTask = () => {
+		deleteTodoToBackend(todo._id);
+	};
 
 	const handleTitleChange = (e: ChangeEvent<HTMLInputElement>) => {
 		setNewTitle(e.target.value);
@@ -40,41 +69,8 @@ export const Todo = memo(({ todo, setTodo }: TodoProps) => {
 		setNewDescription(e.target.value);
 	};
 
-	const handleIsEditChange = async () => {
-		await updateTodo(todo._id, {
-			title: newTitle,
-			description: newDescription,
-		});
-		// await handleGetTodos();
-		setIsEdit(!isEdit);
-	};
-
-	// const handleGetTodos = useCallback(async () => {
-	// 	getTodos(filters)
-	// 		.then((todos) => {
-	// 			dispatch(setTodos(todos.data || []));
-	// 		})
-	// 		.catch(() => {
-	// 			enqueueSnackbar('Error fetching todos', { variant: 'error' });
-	// 			dispatch(setTodos([]));
-	// 		});
-	// }, [dispatch]);
-
-	const handleCheckboxClick = () => {
-		setTodo?.({ ...todo, completed: !todo.completed });
-	};
-
-	const [
-		deleteTodoToBackend,
-		{ isError: isDeletingError, isLoading: isDeletingLoading },
-	] = useDeleteTodoMutation();
-
-	const handleDeleteTask = () => {
-		deleteTodoToBackend(todo._id);
-	};
-
-	const isError = isDeletingError;
-	const isLoading = isDeletingLoading;
+	const isError = isDeletingError || isUpdatingError;
+	const isLoading = isDeletingLoading || isUpdatingLoading;
 
 	useEffect(() => {
 		if (isError) {

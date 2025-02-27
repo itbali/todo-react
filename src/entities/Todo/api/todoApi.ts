@@ -1,4 +1,3 @@
-import { rootApi } from '../../../shared/api/rootApi.ts';
 import { CreateTodoType, TodoType } from '../model/todoType.ts';
 import { TodosType } from '../model/store/todosStore.ts';
 import { rtkApi } from '../../../shared/api/rtkApi.ts';
@@ -6,6 +5,7 @@ import { rtkApi } from '../../../shared/api/rtkApi.ts';
 type UpdateTodoPayload = {
 	title?: string;
 	description?: string;
+	completed?: boolean;
 };
 
 // export const getTodos = async (filters: TodosType['filters']) => {
@@ -32,16 +32,16 @@ type UpdateTodoPayload = {
 // 	});
 // };
 //
-export const updateTodo = async (
-	todoId: string,
-	updateData: UpdateTodoPayload,
-) => {
-	return await rootApi.patch<TodoType>(`/todos/${todoId}`, updateData);
-};
+// export const updateTodo = async (
+// 	todoId: string,
+// 	updateData: UpdateTodoPayload,
+// ) => {
+// 	return await rootApi.patch<TodoType>(`/todos/${todoId}`, updateData);
+// };
 //
-export const getTodoById = async (todoId: string) => {
-	return await rootApi.get<TodoType>(`/todos/${todoId}`);
-};
+// export const getTodoById = async (todoId: string) => {
+// 	return await rootApi.get<TodoType>(`/todos/${todoId}`);
+// };
 
 const getQueryParams = (filters: TodosType['filters']) => {
 	let queryParams = `?page=${filters.page}&limit=${filters.limit}`;
@@ -82,8 +82,28 @@ export const todoApiRTK = rtkApi.injectEndpoints({
 			}),
 			invalidatesTags: ['Todo'],
 		}),
+		getTodoById: build.query<TodoType, string>({
+			query: (todoId) => `/todos/${todoId}`,
+			providesTags: ['Todo'],
+		}),
+		updateTodo: build.mutation<
+			TodoType,
+			{ todoId: string; updateData: UpdateTodoPayload }
+		>({
+			query: ({ todoId, updateData }) => ({
+				url: `/todos/${todoId}`,
+				method: 'PATCH',
+				body: updateData,
+			}),
+			invalidatesTags: ['Todo'],
+		}),
 	}),
 });
 
-export const { useGetTodosQuery, useAddTodoMutation, useDeleteTodoMutation } =
-	todoApiRTK;
+export const {
+	useGetTodosQuery,
+	useAddTodoMutation,
+	useDeleteTodoMutation,
+	useGetTodoByIdQuery,
+	useUpdateTodoMutation,
+} = todoApiRTK;

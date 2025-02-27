@@ -10,7 +10,7 @@ import {
 	Tooltip,
 } from '@mui/material';
 import { Todo } from './Todo.tsx';
-import { ChangeEvent, useCallback, useEffect, useState } from 'react';
+import { ChangeEvent, useEffect, useState } from 'react';
 import AddIcon from '@mui/icons-material/Add';
 import { useAddTodoMutation, useGetTodosQuery } from '../api/todoApi.ts';
 import { useSnackbar } from 'notistack';
@@ -19,22 +19,11 @@ import { useAppSelector } from '../../../app/store.ts';
 
 const Todos = () => {
 	const filters = useAppSelector(selectFilters);
-	// const user = useAppSelector(selectUser);
 
 	const { enqueueSnackbar } = useSnackbar();
 
 	const [newTodoTitle, setNewTodoTitle] = useState<string>('');
 	const [newTodoDescription, setNewTodoDescription] = useState<string>('');
-
-	const setTodo = useCallback(() => {
-		// 	// const updatedTodos = todos.map((t) => {
-		// 	// 	if (t._id === todo._id) {
-		// 	// 		return todo;
-		// 	// 	}
-		// 	// 	return t;
-		// 	// });
-		// 	// dispatch(setTodos(updatedTodos));
-	}, []);
 
 	const {
 		data,
@@ -131,7 +120,7 @@ const Todos = () => {
 			</Stack>
 			<Stack spacing={2} direction="row" flexWrap="wrap" useFlexGap>
 				{data?.map((todo) => {
-					return <Todo todo={todo} key={todo._id} setTodo={setTodo} />;
+					return <Todo todo={todo} key={todo._id} />;
 				})}
 			</Stack>
 		</Container>
