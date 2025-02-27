@@ -75,7 +75,7 @@ export const SingleTodo = () => {
 			{isEdit ? editModeContent : viewModeContent}
 			<Typography>{todo.createdAt}</Typography>
 			<Typography>
-				Time from last update: {formatDistanceToNow(todo.updatedAt)}
+				Time from last update: {formatDistanceToNow(todo.updatedAt, true)}
 			</Typography>
 			<Typography>{todo.completed ? 'Complete' : 'Not completed'}</Typography>
 			<IconButton aria-label="edit" size="large" onClick={handleIsEditChange}>
