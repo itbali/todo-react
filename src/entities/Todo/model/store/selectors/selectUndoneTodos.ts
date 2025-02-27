@@ -2,7 +2,7 @@ import { createSelector } from '@reduxjs/toolkit';
 import { todoApiRTK } from '../../../api/todoApi.ts';
 
 export const selectUndoneTodos = createSelector(
-	// @ts-ignore
+	// @ts-expect-error
 	[todoApiRTK.endpoints.getTodos.select()],
 	(todos) => todos.data?.filter((todo) => !todo.completed),
 );
