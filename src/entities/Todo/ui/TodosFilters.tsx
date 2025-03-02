@@ -31,6 +31,12 @@ const TodosFilters = () => {
 
 	const [searchInput, setSearchInput] = useState(filters.search || '');
 
+	const filterButtons = [
+		{ value: 'true', label: 'Completed' },
+		{ value: 'false', label: 'In progress' },
+		{ value: 'all', label: 'Show all' },
+	] as const;
+
 	const handleFilterChange = (filter: 'true' | 'false' | 'all') => {
 		dispatch(setCompletedFilter(filter));
 	};
@@ -80,28 +86,18 @@ const TodosFilters = () => {
 							sx={{ width: '20%', marginBottom: '10px !important' }}
 						/>
 						<ButtonGroup>
-							<Button
-								onClick={() => handleFilterChange('true')}
-								variant={
-									filters.completed === 'true' ? 'contained' : 'outlined'
-								}
-							>
-								Completed
-							</Button>
-							<Button
-								onClick={() => handleFilterChange('false')}
-								variant={
-									filters.completed === 'false' ? 'contained' : 'outlined'
-								}
-							>
-								In progress
-							</Button>
-							<Button
-								onClick={() => handleFilterChange('all')}
-								variant={filters.completed === 'all' ? 'contained' : 'outlined'}
-							>
-								Show All
-							</Button>
+							{filterButtons.map((button) => (
+								<Button
+									onClick={() => handleFilterChange(button.value)}
+									variant={
+										filters.completed === button.value
+											? 'contained'
+											: 'outlined'
+									}
+								>
+									{button.label}
+								</Button>
+							))}
 						</ButtonGroup>
 						<Typography>Show by:</Typography>
 						<Select

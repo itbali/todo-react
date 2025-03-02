@@ -1,4 +1,4 @@
-import { ChangeEvent, useEffect, useState } from 'react';
+import { ChangeEvent, useCallback, useEffect, useState } from 'react';
 import { NavLink, To, useParams } from 'react-router';
 import { useGetTodoByIdQuery, useUpdateTodoMutation } from '../api/todoApi.ts';
 import {
@@ -41,7 +41,7 @@ export const SingleTodo = () => {
 		}
 	}, [todo]);
 
-	const handleIsEditChange = async () => {
+	const handleIsEditChange = useCallback(async () => {
 		if (!params._id) return;
 		if (isEdit) {
 			updateTodo({
@@ -50,7 +50,7 @@ export const SingleTodo = () => {
 			});
 		}
 		setIsEdit(!isEdit);
-	};
+	}, [isEdit, newDescription, newTitle, params._id, updateTodo]);
 
 	const handleTitleChange = (e: ChangeEvent<HTMLInputElement>) => {
 		setNewTitle(e.target.value);
