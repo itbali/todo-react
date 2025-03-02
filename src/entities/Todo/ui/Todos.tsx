@@ -1,4 +1,4 @@
-import { Container, Stack } from '@mui/material';
+import { CircularProgress, Container, Stack } from '@mui/material';
 import { Todo } from './Todo.tsx';
 import { useEffect } from 'react';
 import { useGetTodosQuery } from '../api/todoApi.ts';
@@ -12,7 +12,7 @@ const Todos = () => {
 
 	const { enqueueSnackbar } = useSnackbar();
 
-	const { data, isError } = useGetTodosQuery(filters);
+	const { data, isError, isLoading } = useGetTodosQuery(filters);
 
 	useEffect(() => {
 		if (isError) {
@@ -20,9 +20,9 @@ const Todos = () => {
 		}
 	}, [enqueueSnackbar, isError]);
 
-	// if (isLoading) {
-	// 	return <CircularProgress />;
-	// }
+	if (isLoading) {
+		return <CircularProgress />;
+	}
 
 	return (
 		<Container>

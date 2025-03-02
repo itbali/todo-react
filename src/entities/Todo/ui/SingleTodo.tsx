@@ -93,7 +93,7 @@ export const SingleTodo = () => {
 	);
 
 	return (
-		<Stack p={3}>
+		<Stack p={3} sx={{ alignItems: 'flex-start' }}>
 			<NavLink to={-1 as To}>Back</NavLink>
 			{isEdit ? editModeContent : viewModeContent}
 			<Typography>{todo.createdAt}</Typography>
