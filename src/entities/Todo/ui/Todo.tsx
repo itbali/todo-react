@@ -46,8 +46,8 @@ export const Todo = memo(({ todo }: TodoProps) => {
 				todoId: todo._id,
 				updateData: { title: newTitle, description: newDescription },
 			});
-			setIsEdit(!isEdit);
 		}
+		setIsEdit(!isEdit);
 	};
 
 	const handleCheckboxClick = () => {
