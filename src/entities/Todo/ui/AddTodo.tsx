@@ -9,30 +9,33 @@ import {
 	Tooltip,
 } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
-import { ChangeEvent, useEffect, useState } from 'react';
+import { ChangeEvent, memo, useCallback, useEffect, useState } from 'react';
 import { useAddTodoMutation } from '../api/todoApi.ts';
 import { useSnackbar } from 'notistack';
 
-const AddTodo = () => {
+const AddTodo = memo(() => {
 	const [newTodoTitle, setNewTodoTitle] = useState<string>('');
 	const [newTodoDescription, setNewTodoDescription] = useState<string>('');
 
 	const { enqueueSnackbar } = useSnackbar();
 
-	const handleTitleChange = (e: ChangeEvent<HTMLInputElement>) => {
+	const handleTitleChange = useCallback((e: ChangeEvent<HTMLInputElement>) => {
 		setNewTodoTitle(e.target.value);
-	};
+	}, []);
 
-	const handleDescriptionChange = (e: ChangeEvent<HTMLInputElement>) => {
-		setNewTodoDescription(e.target.value);
-	};
+	const handleDescriptionChange = useCallback(
+		(e: ChangeEvent<HTMLInputElement>) => {
+			setNewTodoDescription(e.target.value);
+		},
+		[],
+	);
 
 	const [addTodoToBackend, { isError, isLoading, isSuccess: isAddingSuccess }] =
 		useAddTodoMutation();
 
-	const handleAddTodo = () => {
+	const handleAddTodo = useCallback(() => {
 		addTodoToBackend({ title: newTodoTitle, description: newTodoDescription });
-	};
+	}, [addTodoToBackend, newTodoDescription, newTodoTitle]);
 
 	useEffect(() => {
 		const handleClearFields = () => {
@@ -97,6 +100,6 @@ const AddTodo = () => {
 			</Accordion>
 		</Stack>
 	);
-};
+});
 
 export default AddTodo;
