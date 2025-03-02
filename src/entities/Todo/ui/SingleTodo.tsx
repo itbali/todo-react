@@ -9,7 +9,10 @@ import {
 	Tooltip,
 	Typography,
 } from '@mui/material';
-import { formatDistanceToNow } from '../../../shared/utils/DateConverter.ts';
+import {
+	dateConverter,
+	formatDistanceToNow,
+} from '../../../shared/utils/DateConverter.ts';
 import { Done, Edit } from '@mui/icons-material';
 import { enqueueSnackbar } from 'notistack';
 
@@ -88,7 +91,7 @@ export const SingleTodo = () => {
 	const viewModeContent = (
 		<>
 			<Typography variant={'h4'}>{todo.title}</Typography>
-			<Typography>{todo.description}</Typography>
+			<Typography variant={'h5'}>{todo.description}</Typography>
 		</>
 	);
 
@@ -96,7 +99,7 @@ export const SingleTodo = () => {
 		<Stack p={3} sx={{ alignItems: 'flex-start' }}>
 			<NavLink to={-1 as To}>Back</NavLink>
 			{isEdit ? editModeContent : viewModeContent}
-			<Typography>{todo.createdAt}</Typography>
+			<Typography>{dateConverter(todo.createdAt)}</Typography>
 			<Typography>
 				Time from last update: {formatDistanceToNow(todo.updatedAt, true)}
 			</Typography>
