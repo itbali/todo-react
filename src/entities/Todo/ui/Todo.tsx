@@ -4,6 +4,7 @@ import {
 	CardActions,
 	CardContent,
 	Checkbox,
+	CircularProgress,
 	IconButton,
 	Input,
 	Stack,
@@ -11,27 +12,54 @@ import {
 	Typography,
 } from '@mui/material';
 import { Delete, Done, Edit } from '@mui/icons-material';
-import { selectFilters, setTodos } from '../model/store/todosStore.ts';
 import { dateConverter } from '../../../shared/utils/DateConverter.ts';
-import { ChangeEvent, memo, useCallback, useState } from 'react';
+import { ChangeEvent, memo, useEffect, useState } from 'react';
 import { enqueueSnackbar } from 'notistack';
-import { deleteTodo, getTodos, updateTodo } from '../api/todoApi.ts';
-import { useAppDispatch, useAppSelector } from '../../../app/store.ts';
+import {
+	useDeleteTodoMutation,
+	useUpdateTodoMutation,
+} from '../api/todoApi.ts';
 import { NavLink } from 'react-router';
 
 type TodoProps = {
 	todo: TodoType;
-	setTodo?: (todo: TodoType) => void;
 };
 
-export const Todo = memo(({ todo, setTodo }: TodoProps) => {
-	const dispatch = useAppDispatch();
-
-	const filters = useAppSelector(selectFilters);
-
+export const Todo = memo(({ todo }: TodoProps) => {
 	const [isEdit, setIsEdit] = useState(false);
 	const [newTitle, setNewTitle] = useState(todo.title);
 	const [newDescription, setNewDescription] = useState(todo.description);
+
+	const [
+		updateTodo,
+		{ isError: isUpdatingError, isLoading: isUpdatingLoading },
+	] = useUpdateTodoMutation();
+
+	const [
+		deleteTodoToBackend,
+		{ isError: isDeletingError, isLoading: isDeletingLoading },
+	] = useDeleteTodoMutation();
+
+	const handleIsEditChange = () => {
+		if (isEdit) {
+			updateTodo({
+				todoId: todo._id,
+				updateData: { title: newTitle, description: newDescription },
+			});
+		}
+		setIsEdit(!isEdit);
+	};
+
+	const handleCheckboxClick = () => {
+		updateTodo({
+			todoId: todo._id,
+			updateData: { completed: !todo.completed },
+		});
+	};
+
+	const handleDeleteTask = () => {
+		deleteTodoToBackend(todo._id);
+	};
 
 	const handleTitleChange = (e: ChangeEvent<HTMLInputElement>) => {
 		setNewTitle(e.target.value);
@@ -41,39 +69,14 @@ export const Todo = memo(({ todo, setTodo }: TodoProps) => {
 		setNewDescription(e.target.value);
 	};
 
-	const handleIsEditChange = async () => {
-		await updateTodo(todo._id, {
-			title: newTitle,
-			description: newDescription,
-		});
-		await handleGetTodos();
-		setIsEdit(!isEdit);
-	};
+	const isError = isDeletingError || isUpdatingError;
+	const isLoading = isDeletingLoading || isUpdatingLoading;
 
-	const handleGetTodos = useCallback(async () => {
-		getTodos(filters)
-			.then((todos) => {
-				dispatch(setTodos(todos.data || []));
-			})
-			.catch(() => {
-				enqueueSnackbar('Error fetching todos', { variant: 'error' });
-				dispatch(setTodos([]));
-			});
-	}, [dispatch]);
-
-	const handleCheckboxClick = () => {
-		setTodo?.({ ...todo, completed: !todo.completed });
-	};
-
-	const handleDeleteTask = async () => {
-		try {
-			await deleteTodo(todo._id);
-			await handleGetTodos();
-		} catch (error) {
-			console.error(error);
+	useEffect(() => {
+		if (isError) {
 			enqueueSnackbar('Error deleting todo', { variant: 'error' });
 		}
-	};
+	}, [isError]);
 
 	const editModeContent = (
 		<>
@@ -105,6 +108,10 @@ export const Todo = memo(({ todo, setTodo }: TodoProps) => {
 			</Typography>
 		</>
 	);
+
+	if (isLoading) {
+		return <CircularProgress />;
+	}
 
 	return (
 		<Card

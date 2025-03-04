@@ -18,6 +18,7 @@ import {
 	MenuItem,
 	Select,
 	SelectChangeEvent,
+	Stack,
 	Typography,
 } from '@mui/material';
 import React, { useCallback, useState } from 'react';
@@ -29,6 +30,12 @@ const TodosFilters = () => {
 	const dispatch = useAppDispatch();
 
 	const [searchInput, setSearchInput] = useState(filters.search || '');
+
+	const filterButtons = [
+		{ value: 'true', label: 'Completed' },
+		{ value: 'false', label: 'In progress' },
+		{ value: 'all', label: 'Show all' },
+	] as const;
 
 	const handleFilterChange = (filter: 'true' | 'false' | 'all') => {
 		dispatch(setCompletedFilter(filter));
@@ -67,39 +74,43 @@ const TodosFilters = () => {
 			<Accordion>
 				<AccordionSummary>Filters</AccordionSummary>
 				<AccordionDetails>
-					<Input onChange={handleChangeSearch} value={searchInput} />
-					<br />
-					<ButtonGroup>
-						<Button
-							onClick={() => handleFilterChange('true')}
-							variant={filters.completed === 'true' ? 'contained' : 'outlined'}
-						>
-							Completed
-						</Button>
-						<Button
-							onClick={() => handleFilterChange('false')}
-							variant={filters.completed === 'false' ? 'contained' : 'outlined'}
-						>
-							In progress
-						</Button>
-						<Button
-							onClick={() => handleFilterChange('all')}
-							variant={filters.completed === 'all' ? 'contained' : 'outlined'}
-						>
-							Show All
-						</Button>
-					</ButtonGroup>
-					<br />
-					<Typography>Show by:</Typography>
-					<Select
-						value={filters.limit}
-						onChange={handleChangeLimit}
-						variant={'filled'}
+					<Stack
+						spacing={1}
+						direction="column"
+						sx={{ justifyContent: 'center	', alignItems: 'flex-start' }}
 					>
-						<MenuItem value={5}>5</MenuItem>
-						<MenuItem value={10}>10</MenuItem>
-						<MenuItem value={20}>20</MenuItem>
-					</Select>
+						<Input
+							onChange={handleChangeSearch}
+							value={searchInput}
+							placeholder={'Search todo'}
+							sx={{ width: '20%', marginBottom: '10px !important' }}
+						/>
+						<ButtonGroup>
+							{filterButtons.map((button) => (
+								<Button
+									onClick={() => handleFilterChange(button.value)}
+									variant={
+										filters.completed === button.value
+											? 'contained'
+											: 'outlined'
+									}
+								>
+									{button.label}
+								</Button>
+							))}
+						</ButtonGroup>
+						<Typography>Show by:</Typography>
+						<Select
+							value={filters.limit}
+							onChange={handleChangeLimit}
+							variant={'filled'}
+							sx={{ maxHeight: '40px' }}
+						>
+							<MenuItem value={5}>5</MenuItem>
+							<MenuItem value={10}>10</MenuItem>
+							<MenuItem value={20}>20</MenuItem>
+						</Select>
+					</Stack>
 				</AccordionDetails>
 			</Accordion>
 			<ButtonGroup>
