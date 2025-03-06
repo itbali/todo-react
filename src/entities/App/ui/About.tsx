@@ -7,7 +7,11 @@ const About = () => {
 				<Typography variant="h2" component="div">
 					About
 				</Typography>
-				<Typography variant="h6" component="div">
+				<Typography
+					variant="h6"
+					component="div"
+					data-testid={'version-container'}
+				>
 					version 0.0.1
 				</Typography>
 			</Stack>
