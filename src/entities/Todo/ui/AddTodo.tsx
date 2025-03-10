@@ -81,18 +81,21 @@ const AddTodo = memo(() => {
 						placeholder={'enter title'}
 						onChange={handleTitleChange}
 						value={newTodoTitle}
+						data-testid={'titleInput'}
 					/>
 					<Input
 						placeholder={'enter description'}
 						onChange={handleDescriptionChange}
 						value={newTodoDescription}
 						sx={{ marginLeft: '10px' }}
+						data-testid={'descriptionInput'}
 					/>
 					<Button
 						variant={'text'}
 						disabled={!newTodoTitle}
 						onClick={handleAddTodo}
 						sx={{ marginLeft: '10px' }}
+						data-testid={'addTodoButton'}
 					>
 						Add Todo
 					</Button>
