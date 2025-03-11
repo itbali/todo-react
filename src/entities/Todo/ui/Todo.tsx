@@ -99,11 +99,16 @@ export const Todo = memo(({ todo }: TodoProps) => {
 		<>
 			<Typography
 				gutterBottom
+				data-testid={'propsTitle'}
 				sx={{ color: 'text.secondary', fontSize: 14, width: '100%' }}
 			>
 				<NavLink to={`/todo/${todo._id}`}>{todo.title}</NavLink>
 			</Typography>
-			<Typography variant="body2" sx={{ width: '100%' }}>
+			<Typography
+				variant="body2"
+				data-testid={'propsDescription'}
+				sx={{ width: '100%' }}
+			>
 				{todo.description}
 			</Typography>
 		</>
@@ -145,7 +150,10 @@ export const Todo = memo(({ todo }: TodoProps) => {
 					</Tooltip>
 				</IconButton>
 				<Tooltip title={`Updated: ${dateConverter(todo.updatedAt)}`}>
-					<Typography sx={{ color: 'text.secondary', fontSize: 12 }}>
+					<Typography
+						sx={{ color: 'text.secondary', fontSize: 12 }}
+						data-testid={'propsCreateDate'}
+					>
 						{dateConverter(todo.createdAt)}
 					</Typography>
 				</Tooltip>
