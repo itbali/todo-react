@@ -68,7 +68,10 @@ const Login = () => {
 
 	useEffect(() => {
 		if (isError) {
-			enqueueSnackbar(`${error.data.message}`, { variant: 'error' });
+			if (error && typeof error === 'object' && 'data' in error) {
+				const errorData = error.data as { message?: string };
+				enqueueSnackbar(`${errorData.message}`, { variant: 'error' });
+			}
 		}
 	}, [enqueueSnackbar, error, isError]);
 

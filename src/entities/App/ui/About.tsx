@@ -1,6 +1,6 @@
 import { Container, Stack, Typography } from '@mui/material';
 
-const About = ({ title, version }: { title: string; version: string }) => {
+const About = ({ title, version }: { title?: string; version?: string }) => {
 	return (
 		<Container maxWidth={'sm'}>
 			<Stack spacing={2}>
