@@ -37,7 +37,7 @@ describe('function formatDistanceToNow', () => {
 			new Date(Date.now() - 13 * 30 * 24 * 60 * 60 * 1000).toISOString(),
 			'about 1 year',
 		],
-	])('%s', (description, dateString, expected) => {
+	])('%s', (_, dateString, expected) => {
 		expect(formatDistanceToNow(dateString)).toBe(expected);
 	});
 });
