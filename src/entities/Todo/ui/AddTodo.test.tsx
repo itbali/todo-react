@@ -61,6 +61,7 @@ describe('AddTodo', () => {
 	test('creating new Todo', async () => {
 		const mockAddTodo = vi.fn();
 
+		// @ts-expect-error
 		useAddTodoMutation.mockReturnValue([
 			mockAddTodo,
 			{ isLoading: false, isError: false, isSuccess: false },
