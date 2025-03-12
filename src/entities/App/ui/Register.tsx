@@ -90,7 +90,7 @@ const Register = () => {
 			enqueueSnackbar('Successfully registered!', { variant: 'success' });
 			handleClearFields();
 		}
-	}, [isSuccess, data]);
+	}, [data, dispatch, enqueueSnackbar, isSuccess]);
 
 	useEffect(() => {
 		if (isError) {
