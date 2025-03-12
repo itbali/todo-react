@@ -31,6 +31,7 @@ const Register = () => {
 	const [email, setEmail] = useState('');
 	const [password, setPassword] = useState('');
 	const [showPassword, setShowPassword] = useState(false);
+	const [emailError, setEmailError] = useState(false);
 
 	const minLengthPassword = 12;
 
@@ -59,6 +60,11 @@ const Register = () => {
 		e: SyntheticEvent<HTMLTextAreaElement | HTMLInputElement>,
 	) => {
 		setEmail(e.currentTarget.value);
+		if (e.currentTarget.validity.valid) {
+			setEmailError(false);
+		} else {
+			setEmailError(true);
+		}
 	};
 
 	const handlePasswordChange = (
@@ -110,6 +116,8 @@ const Register = () => {
 				disabled={loading}
 				variant={'filled'}
 				required
+				error={emailError}
+				helperText={emailError ? 'Please enter your email' : ''}
 				slotProps={{
 					input: {
 						startAdornment: (
