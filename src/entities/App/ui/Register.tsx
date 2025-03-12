@@ -51,6 +51,8 @@ const Register = () => {
 		strengthText = 'Weak';
 	}
 
+	const lettersRegex = /^[A-Za-z_-]+$/;
+
 	const handleClearFields = () => {
 		setEmail('');
 		setPassword('');
@@ -59,12 +61,9 @@ const Register = () => {
 	const handleEmailChange = (
 		e: SyntheticEvent<HTMLTextAreaElement | HTMLInputElement>,
 	) => {
-		setEmail(e.currentTarget.value);
-		if (e.currentTarget.validity.valid) {
-			setEmailError(false);
-		} else {
-			setEmailError(true);
-		}
+		const newValue = e.currentTarget.value;
+		setEmail(newValue);
+		setEmailError(!lettersRegex.test(newValue));
 	};
 
 	const handlePasswordChange = (
@@ -117,7 +116,11 @@ const Register = () => {
 				variant={'filled'}
 				required
 				error={emailError}
-				helperText={emailError ? 'Please enter your email' : ''}
+				helperText={
+					emailError
+						? 'Please enter your email (should contain only letters)'
+						: ''
+				}
 				slotProps={{
 					input: {
 						startAdornment: (
@@ -200,7 +203,7 @@ const Register = () => {
 			<Button
 				onClick={handleRegister}
 				variant={'contained'}
-				loading={loading}
+				loading={loading || emailError}
 				loadingPosition={'start'}
 			>
 				{loading ? 'Loading...' : 'Register'}
