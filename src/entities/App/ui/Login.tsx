@@ -13,7 +13,7 @@ import {
 	Visibility,
 	VisibilityOff,
 } from '@mui/icons-material';
-import { SyntheticEvent, useEffect, useState } from 'react';
+import { SyntheticEvent, useCallback, useEffect, useState } from 'react';
 import { selectIsLoading, setUser } from '../../User/model/store/userStore.ts';
 import { useSnackbar } from 'notistack';
 import { useAppDispatch, useAppSelector } from '../../../app/store.ts';
@@ -35,17 +35,19 @@ const Login = () => {
 		setPassword('');
 	};
 
-	const handleEmailChange = (
-		e: SyntheticEvent<HTMLTextAreaElement | HTMLInputElement>,
-	) => {
-		setEmail(e.currentTarget.value);
-	};
+	const handleEmailChange = useCallback(
+		(e: SyntheticEvent<HTMLTextAreaElement | HTMLInputElement>) => {
+			setEmail(e.currentTarget.value);
+		},
+		[],
+	);
 
-	const handlePasswordChange = (
-		e: SyntheticEvent<HTMLTextAreaElement | HTMLInputElement>,
-	) => {
-		setPassword(e.currentTarget.value);
-	};
+	const handlePasswordChange = useCallback(
+		(e: SyntheticEvent<HTMLTextAreaElement | HTMLInputElement>) => {
+			setPassword(e.currentTarget.value);
+		},
+		[],
+	);
 
 	const handleClickShowPassword = () => setShowPassword(!showPassword);
 
@@ -64,7 +66,7 @@ const Login = () => {
 			enqueueSnackbar('Welcome to Your Account', { variant: 'success' });
 			handleClearFields();
 		}
-	}, [isSuccess, data]);
+	}, [isSuccess, data, dispatch, enqueueSnackbar]);
 
 	useEffect(() => {
 		if (isError) {

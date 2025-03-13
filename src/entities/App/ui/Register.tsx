@@ -15,11 +15,13 @@ import {
 	Visibility,
 	VisibilityOff,
 } from '@mui/icons-material';
-import { SyntheticEvent, useEffect, useState } from 'react';
+import { SyntheticEvent, useCallback, useEffect, useState } from 'react';
 import { useSnackbar } from 'notistack';
 import { useAppDispatch, useAppSelector } from '../../../app/store.ts';
 import { selectIsLoading, setUser } from '../../User/model/store/userStore.ts';
 import { useRegisterUserMutation } from '../../User/api/userApi.ts';
+import { validateEmail } from '../../../shared/utils/ValidationEmail.ts';
+import { strengthPassword } from '../../../shared/utils/StrengthPassword.ts';
 
 const Register = () => {
 	const loading = useAppSelector(selectIsLoading);
@@ -40,37 +42,28 @@ const Register = () => {
 		100,
 	);
 
-	let strengthText = 'Very weak';
 	const hue = Math.min(password.length * 10, 120);
-
-	if (password.length >= 10) {
-		strengthText = 'Very strong';
-	} else if (password.length >= 6) {
-		strengthText = 'Strong';
-	} else if (password.length >= 3) {
-		strengthText = 'Weak';
-	}
-
-	const lettersRegex = /^[A-Za-z_-]+$/;
 
 	const handleClearFields = () => {
 		setEmail('');
 		setPassword('');
 	};
 
-	const handleEmailChange = (
-		e: SyntheticEvent<HTMLTextAreaElement | HTMLInputElement>,
-	) => {
-		const newValue = e.currentTarget.value;
-		setEmail(newValue);
-		setEmailError(!lettersRegex.test(newValue));
-	};
+	const handleEmailChange = useCallback(
+		(e: SyntheticEvent<HTMLTextAreaElement | HTMLInputElement>) => {
+			const newValue = e.currentTarget.value;
+			setEmail(newValue);
+			setEmailError(!validateEmail(newValue));
+		},
+		[],
+	);
 
-	const handlePasswordChange = (
-		e: SyntheticEvent<HTMLTextAreaElement | HTMLInputElement>,
-	) => {
-		setPassword(e.currentTarget.value);
-	};
+	const handlePasswordChange = useCallback(
+		(e: SyntheticEvent<HTMLTextAreaElement | HTMLInputElement>) => {
+			setPassword(e.currentTarget.value);
+		},
+		[],
+	);
 
 	const handleClickShowPassword = () => setShowPassword(!showPassword);
 
@@ -188,7 +181,7 @@ const Register = () => {
 						color: `hsl(${hue}, 80%, 30%)`,
 					}}
 				>
-					{strengthText}
+					{strengthPassword(password)}
 				</Typography>
 			</Stack>
 			<Button

@@ -13,7 +13,7 @@ import {
 } from '@mui/material';
 import { Delete, Done, Edit } from '@mui/icons-material';
 import { dateConverter } from '../../../shared/utils/DateConverter.ts';
-import { ChangeEvent, memo, useEffect, useState } from 'react';
+import { ChangeEvent, memo, useCallback, useEffect, useState } from 'react';
 import { enqueueSnackbar } from 'notistack';
 import {
 	useDeleteTodoMutation,
@@ -61,13 +61,16 @@ export const Todo = memo(({ todo }: TodoProps) => {
 		deleteTodoToBackend(todo._id);
 	};
 
-	const handleTitleChange = (e: ChangeEvent<HTMLInputElement>) => {
+	const handleTitleChange = useCallback((e: ChangeEvent<HTMLInputElement>) => {
 		setNewTitle(e.target.value);
-	};
+	}, []);
 
-	const handleDescriptionChange = (e: ChangeEvent<HTMLInputElement>) => {
-		setNewDescription(e.target.value);
-	};
+	const handleDescriptionChange = useCallback(
+		(e: ChangeEvent<HTMLInputElement>) => {
+			setNewDescription(e.target.value);
+		},
+		[],
+	);
 
 	const isError = isDeletingError || isUpdatingError;
 	const isLoading = isDeletingLoading || isUpdatingLoading;
