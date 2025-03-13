@@ -1,23 +1,13 @@
 export const validateEmail = (email: string) => {
 	const atIndex = email.indexOf('@');
-
-	if (atIndex === -1) {
-		return false;
-	}
-
-	const lengthBeforeAt = email.slice(0, atIndex).length;
 	const dotIndex = email.indexOf('.', atIndex);
 
-	if (dotIndex === -1) {
+	if (atIndex === -1 || dotIndex === -1) {
 		return false;
 	}
 
 	const lengthBetweenAtAndDot = dotIndex - atIndex - 1;
-	const lengthAfterDot = email.slice(dotIndex + 1).length;
+	const lengthAfterDot = email.length - (dotIndex + 1);
 
-	return !(
-		lengthBeforeAt < 1 ||
-		lengthBetweenAtAndDot < 2 ||
-		lengthAfterDot < 2
-	);
+	return !(atIndex < 1 || lengthBetweenAtAndDot < 2 || lengthAfterDot < 2);
 };
