@@ -15,13 +15,15 @@ import {
 	Visibility,
 	VisibilityOff,
 } from '@mui/icons-material';
-import { SyntheticEvent, useCallback, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useSnackbar } from 'notistack';
 import { useAppDispatch, useAppSelector } from '../../../app/store.ts';
 import { selectIsLoading, setUser } from '../../User/model/store/userStore.ts';
 import { useRegisterUserMutation } from '../../User/api/userApi.ts';
-import { validateEmail } from '../../../shared/utils/ValidationEmail.ts';
 import { strengthPassword } from '../../../shared/utils/StrengthPassword.ts';
+import { object, string } from 'yup';
+import { useForm } from 'react-hook-form';
+import { yupResolver } from '@hookform/resolvers/yup';
 
 const Register = () => {
 	const loading = useAppSelector(selectIsLoading);
@@ -30,12 +32,30 @@ const Register = () => {
 
 	const { enqueueSnackbar } = useSnackbar();
 
-	const [email, setEmail] = useState('');
-	const [password, setPassword] = useState('');
 	const [showPassword, setShowPassword] = useState(false);
-	const [emailError, setEmailError] = useState(false);
 
 	const minLengthPassword = 12;
+
+	const stringSchema = object({
+		email: string().email({ message: 'Invalid email' }),
+		password: string()
+			.min(minLengthPassword, {
+				message: 'Password must be at least 8 characters',
+			})
+			.max(30, { message: 'Password must be maximum 30 characters' }),
+	});
+
+	const {
+		register,
+		handleSubmit,
+		formState: { errors },
+		watch,
+	} = useForm({
+		resolver: yupResolver(stringSchema),
+		mode: 'onBlur',
+	});
+
+	const password = watch('password') || '';
 
 	const strengthPercentage = Math.min(
 		(password.length * 100) / minLengthPassword,
@@ -44,34 +64,13 @@ const Register = () => {
 
 	const hue = Math.min(password.length * 10, 120);
 
-	const handleClearFields = () => {
-		setEmail('');
-		setPassword('');
-	};
-
-	const handleEmailChange = useCallback(
-		(e: SyntheticEvent<HTMLTextAreaElement | HTMLInputElement>) => {
-			const newValue = e.currentTarget.value;
-			setEmail(newValue);
-			setEmailError(!validateEmail(newValue));
-		},
-		[],
-	);
-
-	const handlePasswordChange = useCallback(
-		(e: SyntheticEvent<HTMLTextAreaElement | HTMLInputElement>) => {
-			setPassword(e.currentTarget.value);
-		},
-		[],
-	);
-
 	const handleClickShowPassword = () => setShowPassword(!showPassword);
 
 	const [userRegister, { data, isLoading, isSuccess, error, isError }] =
 		useRegisterUserMutation();
 
-	const handleRegister = () => {
-		userRegister({ username: email, password });
+	const onSubmit = (data) => {
+		userRegister({ username: data.email, password: data.password });
 	};
 
 	useEffect(() => {
@@ -80,7 +79,6 @@ const Register = () => {
 			localStorage.setItem('access_token', accessToken);
 			dispatch(setUser(data));
 			enqueueSnackbar('Successfully registered!', { variant: 'success' });
-			handleClearFields();
 		}
 	}, [data, dispatch, enqueueSnackbar, isSuccess]);
 
@@ -98,110 +96,108 @@ const Register = () => {
 	}
 
 	return (
-		<Stack spacing={2}>
-			<TextField
-				type={'email'}
-				value={email}
-				onChange={handleEmailChange}
-				size={'small'}
-				label={'Email'}
-				disabled={loading}
-				variant={'filled'}
-				required
-				error={emailError}
-				helperText={
-					emailError
-						? 'Please enter your email (should contain only letters)'
-						: ''
-				}
-				slotProps={{
-					input: {
-						startAdornment: (
-							<InputAdornment position={'start'}>
-								<AccountCircle />
-							</InputAdornment>
-						),
-					},
-				}}
-			/>
-			<Stack
-				sx={{
-					'--hue': Math.min(password.length * 10, 120),
-				}}
-			>
+		<form onSubmit={handleSubmit(onSubmit)}>
+			<Stack spacing={2}>
 				<TextField
-					type={showPassword ? 'text' : 'password'}
-					value={password}
-					onChange={handlePasswordChange}
+					type={'email'}
+					{...register('email')}
 					size={'small'}
-					label={'Password'}
+					label={'Email'}
 					disabled={loading}
 					variant={'filled'}
 					required
-					slots={{
-						input: FilledInput,
-					}}
+					error={!!errors.email}
+					helperText={errors.email?.message?.message || ''}
 					slotProps={{
 						input: {
 							startAdornment: (
 								<InputAdornment position={'start'}>
-									<Lock />
-								</InputAdornment>
-							),
-							endAdornment: (
-								<InputAdornment position={'end'}>
-									<IconButton
-										aria-label={
-											showPassword ? 'hide password' : 'show password'
-										}
-										onClick={handleClickShowPassword}
-										edge={'end'}
-									>
-										{showPassword ? <VisibilityOff /> : <Visibility />}
-									</IconButton>
+									<AccountCircle />
 								</InputAdornment>
 							),
 						},
 					}}
 				/>
-				<LinearProgress
-					variant="determinate"
-					value={strengthPercentage}
+				<Stack
 					sx={{
-						bgcolor: 'background.paper',
-						'& .MuiLinearProgress-bar': {
-							bgcolor: `hsl(${hue}, 80%, 40%)`,
-						},
-					}}
-				/>
-				<Typography
-					variant="caption"
-					sx={{
-						alignSelf: 'flex-end',
-						color: `hsl(${hue}, 80%, 30%)`,
+						'--hue': Math.min(password.length * 10, 120),
 					}}
 				>
-					{strengthPassword(password)}
-				</Typography>
+					<TextField
+						type={showPassword ? 'text' : 'password'}
+						{...register('password')}
+						size={'small'}
+						error={!!errors.password}
+						helperText={errors.password?.message?.message || ''}
+						label={'Password'}
+						disabled={loading}
+						variant={'filled'}
+						required
+						slots={{
+							input: FilledInput,
+						}}
+						slotProps={{
+							input: {
+								startAdornment: (
+									<InputAdornment position={'start'}>
+										<Lock />
+									</InputAdornment>
+								),
+								endAdornment: (
+									<InputAdornment position={'end'}>
+										<IconButton
+											aria-label={
+												showPassword ? 'hide password' : 'show password'
+											}
+											onClick={handleClickShowPassword}
+											edge={'end'}
+										>
+											{showPassword ? <VisibilityOff /> : <Visibility />}
+										</IconButton>
+									</InputAdornment>
+								),
+							},
+						}}
+					/>
+					<LinearProgress
+						variant="determinate"
+						value={strengthPercentage}
+						sx={{
+							bgcolor: 'background.paper',
+							'& .MuiLinearProgress-bar': {
+								bgcolor: `hsl(${hue}, 80%, 40%)`,
+							},
+						}}
+					/>
+					<Typography
+						variant="caption"
+						sx={{
+							alignSelf: 'flex-end',
+							color: `hsl(${hue}, 80%, 30%)`,
+						}}
+					>
+						{strengthPassword(password)}
+					</Typography>
+				</Stack>
+				<Button
+					onClick={handleClearFields}
+					variant={'outlined'}
+					size={'small'}
+					disabled={loading}
+					sx={{ marginTop: '5px !important' }}
+				>
+					Clear fields
+				</Button>
+				<Button
+					type="submit"
+					variant={'contained'}
+					loading={loading}
+					loadingPosition={'start'}
+				>
+					{loading ? 'Loading...' : 'Register'}
+				</Button>
 			</Stack>
-			<Button
-				onClick={handleClearFields}
-				variant={'outlined'}
-				size={'small'}
-				disabled={loading}
-				sx={{ marginTop: '5px !important' }}
-			>
-				Clear fields
-			</Button>
-			<Button
-				onClick={handleRegister}
-				variant={'contained'}
-				loading={loading || emailError}
-				loadingPosition={'start'}
-			>
-				{loading ? 'Loading...' : 'Register'}
-			</Button>
-		</Stack>
+		</form>
 	);
 };
 
