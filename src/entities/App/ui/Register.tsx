@@ -37,12 +37,10 @@ const Register = () => {
 	const minLengthPassword = 12;
 
 	const stringSchema = object({
-		email: string().email({ message: 'Invalid email' }),
+		email: string().email('Invalid email'),
 		password: string()
-			.min(minLengthPassword, {
-				message: 'Password must be at least 8 characters',
-			})
-			.max(30, { message: 'Password must be maximum 30 characters' }),
+			.min(minLengthPassword, 'Password must be at least 8 characters')
+			.max(30, 'Password must be maximum 30 characters'),
 	});
 
 	const {
@@ -69,8 +67,11 @@ const Register = () => {
 	const [userRegister, { data, isLoading, isSuccess, error, isError }] =
 		useRegisterUserMutation();
 
-	const onSubmit = (data) => {
-		userRegister({ username: data.email, password: data.password });
+	const onSubmit = (data: { email?: string; password?: string }) => {
+		userRegister({
+			username: data.email || '',
+			password: data.password || '',
+		});
 	};
 
 	useEffect(() => {
@@ -107,7 +108,7 @@ const Register = () => {
 					variant={'filled'}
 					required
 					error={!!errors.email}
-					helperText={errors.email?.message?.message || ''}
+					helperText={errors.email?.message || ''}
 					slotProps={{
 						input: {
 							startAdornment: (
@@ -128,7 +129,7 @@ const Register = () => {
 						{...register('password')}
 						size={'small'}
 						error={!!errors.password}
-						helperText={errors.password?.message?.message || ''}
+						helperText={errors.password?.message || ''}
 						label={'Password'}
 						disabled={loading}
 						variant={'filled'}
@@ -180,7 +181,6 @@ const Register = () => {
 					</Typography>
 				</Stack>
 				<Button
-					onClick={handleClearFields}
 					variant={'outlined'}
 					size={'small'}
 					disabled={loading}
